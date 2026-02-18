@@ -1,6 +1,6 @@
-DROP DATABASE sistema_scoring_futbol;
-CREATE DATABASE sistema_scoring_futbol;
-USE sistema_scoring_futbol;
+DROP DATABASE sistema_futbol;
+CREATE DATABASE sistema_futbol;
+USE sistema_futbol;
 
 -- Tabla para usuarios
 CREATE TABLE usuarios (
