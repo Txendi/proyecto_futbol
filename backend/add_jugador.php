@@ -13,7 +13,7 @@ if (!$data) {
 $nombre = $data['nombre'] ?? '';
 $apellidos = $data['apellidos'] ?? '';
 $alias = $data['alias'] ?? '';
-$posicion = $data['posicion'] ?? '';
+$posicion = $data['posicion_habitual'] ?? '';
 $estado = $data['estado'] ?? 'activo';
 
 $sql = "INSERT INTO jugadores (nombre, apellidos, alias, posicion_habitual, estado) VALUES (?, ?, ?, ?, ?)";

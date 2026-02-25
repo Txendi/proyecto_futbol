@@ -22,7 +22,7 @@ CREATE TABLE temporadas (
 
 -- Tabla de jugadores
 CREATE TABLE jugadores (
-    id_jugador INT UNIQUE PRIMARY KEY,
+    id_jugador INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     apellidos VARCHAR(50) NOT NULL,
     alias VARCHAR(50),
@@ -33,7 +33,7 @@ CREATE TABLE jugadores (
 
 -- Tabla para el dorsal de cada jugador
 CREATE TABLE dorsales_jugador (
-    id_dorsal INT UNIQUE PRIMARY KEY,
+    id_dorsal INT AUTO_INCREMENT PRIMARY KEY,
     id_jugador INT,
     id_temporada INT,
     dorsal INT UNIQUE,
@@ -43,12 +43,12 @@ CREATE TABLE dorsales_jugador (
 
 -- Tabla para la gestion de cada partido
 CREATE TABLE partidos (
-    id_partido INT AUTO_INCREMENT PRIMARY KEY, -- O unique si podria meter
+    id_partido INT AUTO_INCREMENT PRIMARY KEY, 
     id_temporada INT,
     fecha DATE NOT NULL,
     competicion VARCHAR(100),
     rival VARCHAR(100),
-    local_visitante ENUM('local', 'visitante'), -- Uno u otro, asi es mas facil que el varchar
+    local_visitante ENUM('local', 'visitante'), 
     goles_favor INT DEFAULT 0,
     goles_contra INT DEFAULT 0,
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -60,14 +60,13 @@ CREATE TABLE puntuaciones (
     id_puntuacion INT AUTO_INCREMENT PRIMARY KEY,
     id_partido INT,
     id_jugador INT,
-    posicion_evaluada VARCHAR(50),  -- No se si por numero o por texto
+    posicion_evaluada VARCHAR(50), 
     puntuacion_ataque DECIMAL(4,2),
     puntuacion_construccion DECIMAL(4,2),
     puntuacion_defensa DECIMAL(4,2),
     puntuacion_final DECIMAL(4,2),
     explicacion_positiva TEXT,
     explicacion_negativa TEXT,
-    version_modelo VARCHAR(50),   -- Esto que es ????
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_partido) REFERENCES partidos(id_partido),
     FOREIGN KEY (id_jugador) REFERENCES jugadores(id_jugador)
@@ -90,7 +89,7 @@ CREATE TABLE configuraciones_pesos (
 
 -- Tabla para las notas del entrenador
 CREATE TABLE notas_entrenador (
-    id_nota INT AUTO_INCREMENT UNIQUE PRIMARY KEY,
+    id_nota INT AUTO_INCREMENT PRIMARY KEY,
     id_partido INT,
     id_jugador INT,
     nota DECIMAL(4,2),
@@ -104,10 +103,10 @@ CREATE TABLE notas_entrenador (
 CREATE TABLE lesiones (
     id_lesion INT AUTO_INCREMENT PRIMARY KEY,
     id_jugador INT,
-    fecha_inicio DATE NOT NULL,  -- Por si la fecha de cuando le paso, ha sido dias anteriores, asi no pongo el timestamp
+    fecha_inicio DATE NOT NULL,  
     fecha_fin DATE,
     tipo_lesion VARCHAR(100),
-    gravedad ENUM('leve', 'moderada', 'grave'),   -- Asi igual mejor que un VARCHAR
+    gravedad ENUM('leve', 'moderada', 'grave'),
     fecha_prevista_retorno DATE,
     observaciones TEXT, 
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -118,7 +117,7 @@ CREATE TABLE lesiones (
 CREATE TABLE pesos_bloque_posicion (
     id_peso INT AUTO_INCREMENT PRIMARY KEY,
     id_configuracion INT,
-    codigo_posicion VARCHAR(10),
+    codigo_posicion VARCHAR(5),
     porcentaje_ataque DECIMAL(5,2),  
     porcentaje_construccion DECIMAL(5,2),
     porcentaje_defensa DECIMAL(5,2),

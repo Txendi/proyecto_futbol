@@ -16,7 +16,6 @@ $alias = $data['alias'] ?? '';
 $posicion = $data['posicion_habitual'] ?? '';
 $estado = $data['estado'] ?? 'activo';
 
-// 1. Tu consulta SQL (Pista: UPDATE tabla SET campo1 = ?, campo2 = ? WHERE id = ?)
 $sql = "UPDATE jugadores SET nombre = ?, apellidos = ?, alias = ?, posicion_habitual = ?, estado = ? WHERE id_jugador = ?";
 $stmt = $conexion->prepare($sql);
 

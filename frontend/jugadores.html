@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Jugadores</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Jugadores SD Eibar </h2>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevo">
+                + Añadir Jugador
+            </button>
+        </div>
+
+        <table class="table table-striped table-bordered bg-white shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Apellidos</th>
+                    <th>Alias</th>
+                    <th>Posición</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="cuerpo-tabla">
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Hacemos la petición a tu archivo PHP
+        fetch('../backend/get_jugadores.php')
+            .then(respuesta => respuesta.json())
+            .then(datos => {
+                if (datos.ok) {
+                    const tbody = document.getElementById('cuerpo-tabla');
+                    // Recorremos cada jugador y creamos su fila
+                    datos.data.forEach(jugador => {
+                        tbody.innerHTML += `
+                        <tr>
+                            <td>${jugador.id_jugador}</td>
+                            <td>${jugador.nombre}</td>
+                            <td>${jugador.apellidos}</td>
+                            <td>${jugador.alias}</td>
+                            <td>${jugador.posicion_habitual}</td>
+                            <td><span class="badge bg-success">${jugador.estado}</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-warning">Editar</button>
+                                <button class="btn btn-sm btn-danger" onclick="borrar(${jugador.id_jugador})">Borrar</button>
+                            </td>
+                        </tr>
+                    `;
+                    });
+                } else {
+                    alert("Error al cargar jugadores: " + datos.error);
+                }
+            });
+
+        function borrar(id) {
+            let mensaje = confirm("¿Seguro que quieres eliminar a este jugador?");
+
+            if (mensaje) {
+                fetch('../backend/delete_jugador.php', {
+                    method: 'POST',
+                    body: JSON.stringify({ id_jugador: id })
+                })
+                    .then(respuesta => respuesta.json())
+                    .then(datos => {
+                        if (datos.ok) {
+                            window.location.reload();
+                        } else {
+                            alert("Error al borrar: " + datos.error);
+                        }
+                    });
+            }
+        }
+
+        function guardarNuevo() {
+            const datos = {
+                nombre: document.getElementById('add-nombre').value,
+                apellidos: document.getElementById('add-apellidos').value,
+                alias: document.getElementById('add-alias').value,
+                posicion_habitual: document.getElementById('add-posicion').value,
+                estado: document.getElementById('add-estado').value
+            };
+
+            fetch('../backend/add_jugador.php', {
+                method: 'POST',
+                body: JSON.stringify(datos)
+            })
+                .then(respuesta => respuesta.json())
+                .then(resultado => {
+                    if (resultado.ok) {
+                        window.location.reload(); 
+                    } else {
+                        alert("Error al guardar: " + resultado.error);
+                    }
+                });
+        }
+
+    </script>
+
+    <div class="modal fade" id="modalNuevo" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Añadir Jugador</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formNuevo">
+                        <input type="text" id="add-nombre" class="form-control mb-2" placeholder="Nombre" required>
+                        <input type="text" id="add-apellidos" class="form-control mb-2" placeholder="Apellidos"
+                            required>
+                        <input type="text" id="add-alias" class="form-control mb-2" placeholder="Alias">
+                        <input type="text" id="add-posicion" class="form-control mb-2" placeholder="Posición (Ej: EXT)">
+                        <select id="add-estado" class="form-control mb-2">
+                            <option value="activo">Activo</option>
+                            <option value="lesionado">Lesionado</option>
+                        </select>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="guardarNuevo()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
