@@ -98,7 +98,7 @@
                 .then(respuesta => respuesta.json())
                 .then(resultado => {
                     if (resultado.ok) {
-                        window.location.reload(); 
+                        window.location.reload();
                     } else {
                         alert("Error al guardar: " + resultado.error);
                     }
@@ -120,7 +120,19 @@
                         <input type="text" id="add-apellidos" class="form-control mb-2" placeholder="Apellidos"
                             required>
                         <input type="text" id="add-alias" class="form-control mb-2" placeholder="Alias">
-                        <input type="text" id="add-posicion" class="form-control mb-2" placeholder="Posición (Ej: EXT)">
+                        <select id="add-posicion" class="form-control mb-2" required>
+                            <option value="" disabled selected>Selecciona una posición</option>
+                            <option value="POR">Portero</option>
+                            <option value="DFC">Central</option>
+                            <option value="LD">Lateral Derecho</option>
+                            <option value="LI">Lateral Izquierdo</option>
+                            <option value="MCD">Mediocentro Defensivo</option>
+                            <option value="MC">Mediocentro</option>
+                            <option value="MCO">Mediocentro Ofensivo</option>
+                            <option value="EXTD">Extremo Derecho</option>
+                            <option value="EXTI">Extremo Izquierdo</option>
+                            <option value="DC">Delantero Centro</option>
+                        </select>
                         <select id="add-estado" class="form-control mb-2">
                             <option value="activo">Activo</option>
                             <option value="lesionado">Lesionado</option>
