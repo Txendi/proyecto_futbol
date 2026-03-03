@@ -3,16 +3,16 @@
 error_reporting(0);
 ini_set('display_errors', 0);
 
-// --- CONFIGURACIÓN WINDOWS (Casa) ---
-// define('SERVIDOR', 'localhost');
-// define('BBDD', 'sistema_scoring_futbol');
-// define('USUARIO', 'root');
-// define('CLAVE', '');
-
+/* --- CONFIGURACIÓN WINDOWS (Casa) --- */
 define('SERVIDOR', 'localhost');
-define('BBDD', 'sistema_scoring_futbol');
+define('BBDD', 'sistema_futbol');
 define('USUARIO', 'root');
-define('CLAVE', 'root');
+define('CLAVE', '');
+
+/* define('SERVIDOR', 'localhost');
+define('BBDD', 'sistema_futbol');
+define('USUARIO', 'root');
+define('CLAVE', 'root'); */
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);

@@ -221,9 +221,8 @@ VALUES
     ('MCO', 'Mediocentro Ofensivo', 'medio'),
     ('MC', 'Mediocentro', 'medio'),
     ('EXTD', 'Extremo Derecho', 'ataque'),
-    ('EXTI', 'Extremo Izquierdo', 'ataque');
-
-('DC', 'Delantero Centro', 'ataque');
+    ('EXTI', 'Extremo Izquierdo', 'ataque'),
+    ('DC', 'Delantero Centro', 'ataque');
 
 INSERT INTO
     configuraciones_pesos (nombre_configuracion, activa)
