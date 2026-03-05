@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lesiones de Jugadores</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Lesiones de Jugadores</h2>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevo">
+                + Añadir Lesión
+            </button>
+        </div>
+
+        <table class="table table-striped table-bordered bg-white shadow-sm text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>Jugador</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Tipo de Lesión</th>
+                    <th>Gravedad</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="cuerpo-tabla">
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        fetch('../backend/lesiones/get_lesiones.php?id_jugador=1')
+            .then(respuesta => respuesta.json())
+            .then(datos => {
+                if (datos.ok) {
+                    const tbody = document.getElementById('cuerpo-tabla');
+                    datos.data.forEach(lesion => {
+                        tbody.innerHTML += `
+                        <tr>
+                            <td>${lesion.id_jugador}</td>
+                            <td>${lesion.fecha_inicio}</td>
+                            <td>${lesion.fecha_fin}</td>
+                            <td>${lesion.tipo_lesion}</td>
+                            <td>${lesion.gravedad}</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning">Editar</button>
+                                <button class="btn btn-sm btn-danger">Borrar</button>
+                            </td>
+                        </tr>
+                    `;
+                    });
+                } else {
+                    alert("Error al cargar lesiones: " + datos.error);
+                }
+            });
+
+        function guardarNuevo() {
+            const datos = {
+                id_jugador: document.getElementById('add-jugador').value,
+                fecha_inicio: document.getElementById('add-fecha-inicio').value,
+                fecha_fin: document.getElementById('add-fecha-fin').value,
+                tipo_lesion: document.getElementById('add-tipo-lesion').value,
+                gravedad: document.getElementById('add-gravedad').value,
+                fecha_prevista_retorno: document.getElementById('add-fecha-prevista').value,
+                observaciones: document.getElementById('add-observaciones').value
+            };
+
+            fetch('../backend/lesiones/add_lesion.php', {
+                method: 'POST',
+                body: JSON.stringify(datos)
+            })
+                .then(respuesta => respuesta.json())
+                .then(resultado => {
+                    if (resultado.ok) {
+                        window.location.reload();
+                    } else {
+                        alert("Error al guardar: " + resultado.error);
+                    }
+                });
+        }
+    </script>
+
+    <div class="modal fade" id="modalNuevo" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Añadir Lesión</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="add-jugador" class="form-control mb-2" placeholder="ID Jugador" required>
+                    <input type="date" id="add-fecha-inicio" class="form-control mb-2" required>
+                    <input type="date" id="add-fecha-fin" class="form-control mb-2">
+                    <input type="text" id="add-tipo-lesion" class="form-control mb-2" placeholder="Tipo de lesión" required>
+                    <select id="add-gravedad" class="form-control mb-2" required>
+                        <option value="leve">Leve</option>
+                        <option value="moderada">Moderada</option>
+                        <option value="grave">Grave</option>
+                    </select>
+                    <input type="date" id="add-fecha-prevista" class="form-control mb-2">
+                    <textarea id="add-observaciones" class="form-control mb-2" placeholder="Observaciones"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="guardarNuevo()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

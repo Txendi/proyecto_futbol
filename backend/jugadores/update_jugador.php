@@ -1,5 +1,6 @@
 <?php
-require 'conexion.php';
+
+require '../conexion.php';
 
 $input = file_get_contents('php://input');
 $data = json_decode($input, true);
