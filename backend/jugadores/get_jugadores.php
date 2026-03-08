@@ -4,6 +4,7 @@ require '../conexion.php';
 
 $jugadores = [];
 
+// para la busqueda del input
 if (isset($_GET['query'])) {
     $query = '%' . $_GET['query'] . '%';
     $sql = "SELECT id_jugador, nombre, apellidos, alias, posicion_habitual, estado 
@@ -12,7 +13,8 @@ if (isset($_GET['query'])) {
     $stmt = $conexion->prepare($sql);
     $stmt->bind_param("ss", $query, $query);
 } else {
-    $sql = "SELECT id_jugador, nombre, apellidos, alias, posicion_habitual, estado FROM jugadores";
+    // aqui es por si no se escribe nada en el input para que muestre todos 
+    $sql = "SELECT id_jugador, nombre, apellidos, alias, posicion_habitual, estado FROM jugadores ORDER BY nombre ASC";
     $stmt = $conexion->prepare($sql);
 }
 

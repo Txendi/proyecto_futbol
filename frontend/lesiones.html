@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Lesiones de Jugadores</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
 <body class="bg-light">
@@ -34,7 +35,7 @@
     </div>
 
     <script>
-        fetch('../backend/lesiones/get_lesiones.php?id_jugador=1')
+        fetch('../backend/lesiones/get_lesiones.php')
             .then(respuesta => respuesta.json())
             .then(datos => {
                 if (datos.ok) {
@@ -48,8 +49,8 @@
                             <td>${lesion.tipo_lesion}</td>
                             <td>${lesion.gravedad}</td>
                             <td>
-                                <button class="btn btn-sm btn-warning">Editar</button>
-                                <button class="btn btn-sm btn-danger">Borrar</button>
+                                <button class="btn btn-sm btn-warning" onclick="abrirEditar(${lesion.id_lesion}, ${lesion.id_jugador}, '${lesion.fecha_inicio}', '${lesion.fecha_fin ?? ''}', '${lesion.tipo_lesion}', '${lesion.gravedad}', '${lesion.fecha_prevista_retorno ?? ''}', '${(lesion.observaciones ?? '').replace(/'/g, "\\'")}')">Editar</button>
+                                <button class="btn btn-sm btn-danger" onclick="borrarLesion(${lesion.id_lesion})">Borrar</button>
                             </td>
                         </tr>
                     `;
@@ -83,6 +84,65 @@
                     }
                 });
         }
+
+        function borrarLesion(id) {
+            let confirmar = confirm("¿Seguro que quieres eliminar esta lesión?");
+
+            if (confirmar) {
+                fetch('../backend/lesiones/delete_lesion.php', {
+                    method: 'POST',
+                    body: JSON.stringify({ id_lesion: id })
+                })
+                    .then(respuesta => respuesta.json())
+                    .then(datos => {
+                        if (datos.ok) {
+                            window.location.reload();
+                        } else {
+                            alert("Error al borrar: " + datos.error);
+                        }
+                    });
+            }
+        }
+
+        function abrirEditar(id_lesion, id_jugador, fecha_inicio, fecha_fin, tipo_lesion, gravedad, fecha_prevista_retorno, observaciones) {
+            document.getElementById('edit-id').value = id_lesion;
+            document.getElementById('edit-jugador').value = id_jugador;
+            document.getElementById('edit-fecha-inicio').value = fecha_inicio;
+            document.getElementById('edit-fecha-fin').value = fecha_fin;
+            document.getElementById('edit-tipo-lesion').value = tipo_lesion;
+            document.getElementById('edit-gravedad').value = gravedad;
+            document.getElementById('edit-fecha-prevista').value = fecha_prevista_retorno;
+            document.getElementById('edit-observaciones').value = observaciones;
+
+            const modal = new bootstrap.Modal(document.getElementById('modalEditar'));
+            modal.show();
+        }
+
+        function guardarEditar() {
+            const datos = {
+                id_lesion: document.getElementById('edit-id').value,
+                id_jugador: document.getElementById('edit-jugador').value,
+                fecha_inicio: document.getElementById('edit-fecha-inicio').value,
+                fecha_fin: document.getElementById('edit-fecha-fin').value,
+                tipo_lesion: document.getElementById('edit-tipo-lesion').value,
+                gravedad: document.getElementById('edit-gravedad').value,
+                fecha_prevista_retorno: document.getElementById('edit-fecha-prevista').value,
+                observaciones: document.getElementById('edit-observaciones').value
+            };
+
+            fetch('../backend/lesiones/update_lesion.php', {
+                method: 'POST',
+                body: JSON.stringify(datos)
+            })
+                .then(respuesta => respuesta.json())
+                .then(resultado => {
+                    if (resultado.ok) {
+                        window.location.reload();
+                    } else {
+                        alert("Error al editar: " + resultado.error);
+                    }
+                });
+        }
     </script>
 
     <div class="modal fade" id="modalNuevo" tabindex="-1">
@@ -96,7 +156,8 @@
                     <input type="text" id="add-jugador" class="form-control mb-2" placeholder="ID Jugador" required>
                     <input type="date" id="add-fecha-inicio" class="form-control mb-2" required>
                     <input type="date" id="add-fecha-fin" class="form-control mb-2">
-                    <input type="text" id="add-tipo-lesion" class="form-control mb-2" placeholder="Tipo de lesión" required>
+                    <input type="text" id="add-tipo-lesion" class="form-control mb-2" placeholder="Tipo de lesión"
+                        required>
                     <select id="add-gravedad" class="form-control mb-2" required>
                         <option value="leve">Leve</option>
                         <option value="moderada">Moderada</option>
@@ -112,7 +173,43 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="modal fade" id="modalEditar" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Lesión</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="hidden" id="edit-id">
+
+                    <input type="text" id="edit-jugador" class="form-control mb-2" placeholder="ID Jugador" required>
+                    <input type="date" id="edit-fecha-inicio" class="form-control mb-2" required>
+                    <input type="date" id="edit-fecha-fin" class="form-control mb-2">
+                    <input type="text" id="edit-tipo-lesion" class="form-control mb-2" placeholder="Tipo de lesión"
+                        required>
+
+                    <select id="edit-gravedad" class="form-control mb-2" required>
+                        <option value="leve">Leve</option>
+                        <option value="moderada">Moderada</option>
+                        <option value="grave">Grave</option>
+                    </select>
+
+                    <input type="date" id="edit-fecha-prevista" class="form-control mb-2">
+                    <textarea id="edit-observaciones" class="form-control mb-2" placeholder="Observaciones"></textarea>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="guardarEditar()">Guardar cambios</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
 </body>
 

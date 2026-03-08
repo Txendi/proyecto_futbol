@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard SD Eibar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container">
+            <span class="navbar-brand">Sistema SD Eibar</span>
+            <div>
+                <a href="dashboard.html" class="btn btn-outline-light btn-sm">Dashboard</a>
+                <a href="jugadores.html" class="btn btn-outline-light btn-sm">Jugadores</a>
+                <a href="temporadas.html" class="btn btn-outline-light btn-sm">Temporadas</a>
+                <a href="partidos.html" class="btn btn-outline-light btn-sm">Partidos</a>
+                <a href="lesiones.html" class="btn btn-outline-light btn-sm">Lesiones</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="mb-4 text-center">Dashboard SD Eibar</h1>
+
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Jugadores</h5>
+                        <p class="display-6" id="total-jugadores">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Temporadas</h5>
+                        <p class="display-6" id="total-temporadas">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Partidos</h5>
+                        <p class="display-6" id="total-partidos">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Lesiones</h5>
+                        <p class="display-6" id="total-lesiones">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <a href="jugadores.html" class="btn btn-primary w-100">Ir a Jugadores</a>
+            </div>
+            <div class="col-md-4">
+                <a href="temporadas.html" class="btn btn-primary w-100">Ir a Temporadas</a>
+            </div>
+            <div class="col-md-4">
+                <a href="partidos.html" class="btn btn-primary w-100">Ir a Partidos</a>
+            </div>
+            <div class="col-md-6">
+                <a href="lesiones.html" class="btn btn-secondary w-100">Ir a Lesiones</a>
+            </div>
+            <div class="col-md-6">
+                <a href="excel.html" class="btn btn-secondary w-100">Subida de Excel</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        fetch('../backend/jugadores/get_jugadores.php')
+            .then(r => r.json())
+            .then(datos => {
+                if (datos.ok) {
+                    document.getElementById('total-jugadores').textContent = datos.data.length;
+                }
+            });
+
+        fetch('../backend/temporadas/get_temporadas.php')
+            .then(r => r.json())
+            .then(datos => {
+                if (datos.ok) {
+                    document.getElementById('total-temporadas').textContent = datos.data.length;
+                }
+            });
+
+        fetch('../backend/partidos/get_partidos.php')
+            .then(r => r.json())
+            .then(datos => {
+                if (datos.ok) {
+                    document.getElementById('total-partidos').textContent = datos.data.length;
+                }
+            });
+
+        fetch('../backend/lesiones/get_lesiones.php')
+            .then(r => r.json())
+            .then(datos => {
+                if (datos.ok) {
+                    document.getElementById('total-lesiones').textContent = datos.data.length;
+                }
+            });
+            
+    </script>
+
+</body>
+
+</html>

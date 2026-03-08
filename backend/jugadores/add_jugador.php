@@ -5,11 +5,13 @@ require '../conexion.php';
 $input = file_get_contents('php://input');
 $data = json_decode($input, true);
 
+// en caso de no recibir nada
 if (!$data) {
     echo json_encode(['ok' => false, 'error' => 'No se han recibido los datos']);
     exit;
 }
 
+// en caso de no recibir nada los metera vacios, y el de estado en activo
 $nombre = $data['nombre'] ?? '';
 $apellidos = $data['apellidos'] ?? '';
 $alias = $data['alias'] ?? '';

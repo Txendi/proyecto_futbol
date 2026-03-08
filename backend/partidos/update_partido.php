@@ -22,7 +22,7 @@ $id_temporada = $data['id_temporada'] ?? '';
 $sql = "UPDATE partidos SET rival = ?, fecha = ?, competicion = ?, local_visitante = ?, goles_favor = ?, goles_contra = ?, id_temporada = ?
         WHERE id_partido = ?";
 $stmt = $conexion->prepare($sql);
-$stmt->bind_param("sssssiii", $rival, $fecha, $competicion, $local_visitante, $goles_favor, $goles_contra, $id_temporada, $id_partido);
+$stmt->bind_param("ssssiiii", $rival, $fecha, $competicion, $local_visitante, $goles_favor, $goles_contra, $id_temporada, $id_partido);
 
 if ($stmt->execute()) {
     echo json_encode(['ok' => true, 'mensaje' => 'Partido actualizado correctamente']);

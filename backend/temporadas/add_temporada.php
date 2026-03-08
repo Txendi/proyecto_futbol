@@ -17,7 +17,7 @@ $activa = $data['activa'] ?? false;
 
 $sql = "INSERT INTO temporadas (nombre, fecha_inicio, fecha_fin, activa) VALUES (?, ?, ?, ?)";
 $stmt = $conexion->prepare($sql);
-$stmt->bind_param("ssss", $nombre, $fecha_inicio, $fecha_fin, $activa);
+$stmt->bind_param("sssi", $nombre, $fecha_inicio, $fecha_fin, $activa);
 
 if ($stmt->execute()) {
     echo json_encode(['ok' => true, 'mensaje' => 'Temporada creada correctamente']);

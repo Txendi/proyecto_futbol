@@ -12,10 +12,10 @@ if (!$data || !isset($data['id_jugador'])) {
 
 $id_jugador = $data['id_jugador'];
 
+// segun el id que reciba eliminara cierto jugador (esta asociado con el boton, en el front)
 $sql = "DELETE FROM jugadores WHERE id_jugador = ?";
 $stmt = $conexion->prepare($sql);
 $stmt->bind_param("i", $id_jugador);
-$stmt->execute(); 
 
 if ($stmt->execute()) {
     echo json_encode(['ok' => true, 'mensaje' => 'Jugador eliminado correctamente']);

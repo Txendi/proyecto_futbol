@@ -48,8 +48,8 @@
                             <td>${temporada.fecha_fin}</td>
                             <td><span class="badge ${temporada.activa ? 'bg-success' : 'bg-danger'}">${temporada.activa ? 'Activa' : 'Inactiva'}</span></td>
                             <td>
-                                <button class="btn btn-sm btn-warning">Editar</button>
-                                <button class="btn btn-sm btn-danger">Borrar</button>
+                                <button class="btn btn-sm btn-warning" onclick="abrirEditar(${temporada.id_temporada}, '${temporada.nombre}', '${temporada.fecha_inicio}', '${temporada.fecha_fin}', ${temporada.activa})">Editar</button>
+                                <button class="btn btn-sm btn-danger" onclick="borrarTemporada(${temporada.id_temporada})">Borrar</button>
                             </td>
                         </tr>
                     `;
@@ -81,6 +81,68 @@
                 });
         }
 
+        function borrarTemporada(id) {
+
+            let confirmar = confirm("¿Seguro que quieres eliminar esta temporada?");
+
+            if (confirmar) {
+
+                fetch('../backend/temporadas/delete_temporada.php', {
+                    method: 'POST',
+                    body: JSON.stringify({ id_temporada: id })
+                })
+                    .then(respuesta => respuesta.json())
+                    .then(datos => {
+
+                        if (datos.ok) {
+                            window.location.reload();
+                        } else {
+                            alert("Error al borrar: " + datos.error);
+                        }
+
+                    });
+
+            }
+        }
+
+        function abrirEditar(id, nombre, inicio, fin, activa) {
+
+            document.getElementById('edit-id').value = id;
+            document.getElementById('edit-nombre').value = nombre;
+            document.getElementById('edit-fecha-inicio').value = inicio;
+            document.getElementById('edit-fecha-fin').value = fin;
+            document.getElementById('edit-activa').checked = activa == 1;
+
+            const modal = new bootstrap.Modal(document.getElementById('modalEditar'));
+            modal.show();
+        }
+
+        function guardarEditar() {
+
+            const datos = {
+                id_temporada: document.getElementById('edit-id').value,
+                nombre: document.getElementById('edit-nombre').value,
+                fecha_inicio: document.getElementById('edit-fecha-inicio').value,
+                fecha_fin: document.getElementById('edit-fecha-fin').value,
+                activa: document.getElementById('edit-activa').checked
+            };
+
+            fetch('../backend/temporadas/update_temporada.php', {
+                method: 'POST',
+                body: JSON.stringify(datos)
+            })
+                .then(respuesta => respuesta.json())
+                .then(resultado => {
+
+                    if (resultado.ok) {
+                        window.location.reload();
+                    } else {
+                        alert("Error al editar: " + resultado.error);
+                    }
+
+                });
+        }
+
     </script>
 
     <div class="modal fade" id="modalNuevo" tabindex="-1">
@@ -102,6 +164,40 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" onclick="guardarNuevo()">Guardar</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalEditar" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Temporada</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="hidden" id="edit-id">
+
+                    <input type="text" id="edit-nombre" class="form-control mb-2" placeholder="Nombre">
+
+                    <input type="date" id="edit-fecha-inicio" class="form-control mb-2">
+
+                    <input type="date" id="edit-fecha-fin" class="form-control mb-2">
+
+                    <div>
+                        <input type="checkbox" id="edit-activa" class="form-check-input">
+                        <label class="form-check-label">Activa</label>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="guardarEditar()">Guardar cambios</button>
+                </div>
+
             </div>
         </div>
     </div>

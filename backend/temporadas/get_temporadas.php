@@ -4,7 +4,7 @@ require '../conexion.php';
 
 $temporadas = [];
 
-$sql = "SELECT id_temporada, nombre FROM temporadas";
+$sql = "SELECT id_temporada, nombre, fecha_inicio, fecha_fin, activa FROM temporadas";
 $stmt = $conexion->prepare($sql);
 $stmt->execute();
 
@@ -15,11 +15,6 @@ while ($fila = $resultado->fetch_assoc()) {
 }
 
 $stmt->close();
-
-if (empty($temporadas)) {
-    echo json_encode(['ok' => false, 'error' => 'No se encontraron temporadas']);
-    exit;
-}
 
 echo json_encode(['ok' => true, 'data' => $temporadas]);
 

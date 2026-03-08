@@ -13,7 +13,8 @@
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Partidos SD Eibar</h2>
-            <input type="text" id="search-rival" class="form-control" placeholder="Buscar Rival" oninput="filtrarPartidos()">
+            <input type="text" id="search-rival" class="form-control" placeholder="Buscar Rival"
+                oninput="filtrarPartidos()">
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevo">
                 + Añadir Partido
             </button>
@@ -37,31 +38,43 @@
     </div>
 
     <script>
-        fetch('../backend/partidos/get_partidos.php?id_temporada=1')
-            .then(respuesta => respuesta.json())
-            .then(datos => {
-                if (datos.ok) {
+        function cargarPartidos(url) {
+            fetch(url)
+                .then(respuesta => respuesta.json())
+                .then(datos => {
                     const tbody = document.getElementById('cuerpo-tabla');
-                    datos.data.forEach(partido => {
-                        tbody.innerHTML += `
-                        <tr>
-                            <td>${partido.rival}</td>
-                            <td>${partido.fecha}</td>
-                            <td>${partido.competicion}</td>
-                            <td>${partido.local_visitante}</td>
-                            <td>${partido.goles_favor}</td>
-                            <td>${partido.goles_contra}</td>
-                            <td>
-                                <button class="btn btn-sm btn-warning">Editar</button>
-                                <button class="btn btn-sm btn-danger">Borrar</button>
-                            </td>
-                        </tr>
-                    `;
-                    });
-                } else {
-                    alert("Error al cargar partidos: " + datos.error);
-                }
-            });
+                    tbody.innerHTML = "";
+
+                    if (datos.ok) {
+                        datos.data.forEach(partido => {
+                            tbody.innerHTML += `
+                            <tr>
+                                <td>${partido.rival}</td>
+                                <td>${partido.fecha}</td>
+                                <td>${partido.competicion}</td>
+                                <td>${partido.local_visitante}</td>
+                                <td>${partido.goles_favor}</td>
+                                <td>${partido.goles_contra}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning"
+                                        onclick="abrirEditar(${partido.id_partido}, ${partido.id_temporada}, '${partido.rival}', '${partido.fecha}', '${partido.competicion}', '${partido.local_visitante}', ${partido.goles_favor}, ${partido.goles_contra})">
+                                        Editar
+                                    </button>
+                                    <button class="btn btn-sm btn-danger"
+                                        onclick="borrarPartido(${partido.id_partido})">
+                                        Borrar
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                        });
+                    } else {
+                        alert("Error al cargar partidos: " + datos.error);
+                    }
+                });
+        }
+
+        cargarPartidos('../backend/partidos/get_partidos.php');
 
         function guardarNuevo() {
             const datos = {
@@ -90,32 +103,64 @@
 
         function filtrarPartidos() {
             const busqueda = document.getElementById('search-rival').value;
+            cargarPartidos(`../backend/partidos/get_partidos.php?rival=${encodeURIComponent(busqueda)}`);
+        }
 
-            fetch(`../backend/partidos/get_partidos.php?rival=${busqueda}`)
+        function borrarPartido(id) {
+            let confirmar = confirm("¿Seguro que quieres eliminar este partido?");
+
+            if (confirmar) {
+                fetch('../backend/partidos/delete_partido.php', {
+                    method: 'POST',
+                    body: JSON.stringify({ id_partido: id })
+                })
+                    .then(respuesta => respuesta.json())
+                    .then(datos => {
+                        if (datos.ok) {
+                            window.location.reload();
+                        } else {
+                            alert("Error al borrar: " + datos.error);
+                        }
+                    });
+            }
+        }
+
+        function abrirEditar(id, id_temporada, rival, fecha, competicion, local_visitante, goles_favor, goles_contra) {
+            document.getElementById('edit-id').value = id;
+            document.getElementById('edit-temporada').value = id_temporada;
+            document.getElementById('edit-rival').value = rival;
+            document.getElementById('edit-fecha').value = fecha;
+            document.getElementById('edit-competicion').value = competicion;
+            document.getElementById('edit-local-visitante').value = local_visitante;
+            document.getElementById('edit-goles-favor').value = goles_favor;
+            document.getElementById('edit-goles-contra').value = goles_contra;
+
+            const modal = new bootstrap.Modal(document.getElementById('modalEditar'));
+            modal.show();
+        }
+
+        function guardarEditar() {
+            const datos = {
+                id_partido: document.getElementById('edit-id').value,
+                id_temporada: document.getElementById('edit-temporada').value,
+                rival: document.getElementById('edit-rival').value,
+                fecha: document.getElementById('edit-fecha').value,
+                competicion: document.getElementById('edit-competicion').value,
+                local_visitante: document.getElementById('edit-local-visitante').value,
+                goles_favor: document.getElementById('edit-goles-favor').value,
+                goles_contra: document.getElementById('edit-goles-contra').value
+            };
+
+            fetch('../backend/partidos/update_partido.php', {
+                method: 'POST',
+                body: JSON.stringify(datos)
+            })
                 .then(respuesta => respuesta.json())
-                .then(datos => {
-                    const tbody = document.getElementById('cuerpo-tabla');
-                    tbody.innerHTML = "";
-
-                    if (datos.ok) {
-                        datos.data.forEach(partido => {
-                            tbody.innerHTML += `
-                    <tr>
-                        <td>${partido.rival}</td>
-                        <td>${partido.fecha}</td>
-                        <td>${partido.competicion}</td>
-                        <td>${partido.local_visitante}</td>
-                        <td>${partido.goles_favor}</td>
-                        <td>${partido.goles_contra}</td>
-                        <td>
-                            <button class="btn btn-sm btn-warning" onclick="editarPartido(${partido.id_partido})">Editar</button>
-                            <button class="btn btn-sm btn-danger" onclick="borrarPartido(${partido.id_partido})">Borrar</button>
-                        </td>
-                    </tr>
-                    `;
-                        });
+                .then(resultado => {
+                    if (resultado.ok) {
+                        window.location.reload();
                     } else {
-                        alert("Error al cargar partidos: " + datos.error);
+                        alert("Error al editar: " + resultado.error);
                     }
                 });
         }
@@ -124,9 +169,15 @@
             .then(respuesta => respuesta.json())
             .then(datos => {
                 if (datos.ok) {
-                    const selectTemporada = document.getElementById('add-temporada');
+                    const selectAdd = document.getElementById('add-temporada');
+                    const selectEdit = document.getElementById('edit-temporada');
+
                     datos.data.forEach(temporada => {
-                        selectTemporada.innerHTML += `
+                        selectAdd.innerHTML += `
+                            <option value="${temporada.id_temporada}">${temporada.nombre}</option>
+                        `;
+
+                        selectEdit.innerHTML += `
                             <option value="${temporada.id_temporada}">${temporada.nombre}</option>
                         `;
                     });
@@ -149,16 +200,53 @@
                     </select>
                     <input type="text" id="add-rival" class="form-control mb-2" placeholder="Rival" required>
                     <input type="date" id="add-fecha" class="form-control mb-2" required>
-                    <input type="text" id="add-competicion" class="form-control mb-2" placeholder="Competición" required>
+                    <input type="text" id="add-competicion" class="form-control mb-2" placeholder="Competición"
+                        required>
                     <select id="add-local-visitante" class="form-control mb-2" required>
                         <option value="local">Local</option>
                         <option value="visitante">Visitante</option>
                     </select>
-                    <input type="number" id="add-goles-favor" class="form-control mb-2" placeholder="Goles a favor" required>
-                    <input type="number" id="add-goles-contra" class="form-control mb-2" placeholder="Goles en contra" required>
+                    <input type="number" id="add-goles-favor" class="form-control mb-2" placeholder="Goles a favor"
+                        required>
+                    <input type="number" id="add-goles-contra" class="form-control mb-2" placeholder="Goles en contra"
+                        required>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" onclick="guardarNuevo()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalEditar" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Editar Partido</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="edit-id">
+
+                    <select id="edit-temporada" class="form-control mb-2" required>
+                        <option value="" disabled selected>Selecciona una temporada</option>
+                    </select>
+
+                    <input type="text" id="edit-rival" class="form-control mb-2" placeholder="Rival" required>
+                    <input type="date" id="edit-fecha" class="form-control mb-2" required>
+                    <input type="text" id="edit-competicion" class="form-control mb-2" placeholder="Competición"
+                        required>
+                    <select id="edit-local-visitante" class="form-control mb-2" required>
+                        <option value="local">Local</option>
+                        <option value="visitante">Visitante</option>
+                    </select>
+                    <input type="number" id="edit-goles-favor" class="form-control mb-2" placeholder="Goles a favor"
+                        required>
+                    <input type="number" id="edit-goles-contra" class="form-control mb-2" placeholder="Goles en contra"
+                        required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="guardarEditar()">Guardar cambios</button>
                 </div>
             </div>
         </div>
