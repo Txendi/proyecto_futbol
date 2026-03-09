@@ -1,5 +1,5 @@
 <?php
-
+// mismas explicaciones sencillas en todos, basandote en jugadores
 require '../conexion.php';
 
 $partidos = [];
@@ -9,7 +9,8 @@ if (isset($_GET['rival'])) {
 
     $sql = "SELECT id_partido, id_temporada, rival, fecha, competicion, local_visitante, goles_favor, goles_contra
             FROM partidos
-            WHERE rival LIKE ?";
+            WHERE rival LIKE ?
+            ORDER BY fecha DESC";
     $stmt = $conexion->prepare($sql);
     $stmt->bind_param("s", $rival);
 

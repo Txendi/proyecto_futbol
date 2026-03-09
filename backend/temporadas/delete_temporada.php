@@ -1,5 +1,5 @@
 <?php
-
+// mismas explicaciones sencillas en todos, basandote en jugadores
 require '../conexion.php';
 
 header('Content-Type: application/json');
@@ -15,12 +15,12 @@ try {
 
     $id_temporada = $data['id_temporada'];
 
-    // Comprobar si la temporada tiene partidos asociados
-    $sqlCheck = "SELECT COUNT(*) AS total FROM partidos WHERE id_temporada = ?";
-    $stmtCheck = $conexion->prepare($sqlCheck);
-    $stmtCheck->bind_param("i", $id_temporada);
-    $stmtCheck->execute();
-    $resultado = $stmtCheck->get_result();
+    // Comprueba si la temporada tiene algun partido asociados
+    $sqlComprueba = "SELECT COUNT(*) AS total FROM partidos WHERE id_temporada = ?";
+    $stmtComprueba = $conexion->prepare($sqlComprueba);
+    $stmtComprueba->bind_param("i", $id_temporada);
+    $stmtComprueba->execute();
+    $resultado = $stmtComprueba->get_result();
     $fila = $resultado->fetch_assoc();
 
     if ($fila['total'] > 0) {

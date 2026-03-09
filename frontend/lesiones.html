@@ -10,6 +10,19 @@
 
 <body class="bg-light">
 
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container">
+            <span class="navbar-brand">Sistema SD Eibar</span>
+            <div>
+                <a href="dashboard.html" class="btn btn-outline-light btn-sm">Dashboard</a>
+                <a href="jugadores.html" class="btn btn-outline-light btn-sm">Jugadores</a>
+                <a href="temporadas.html" class="btn btn-outline-light btn-sm">Temporadas</a>
+                <a href="partidos.html" class="btn btn-outline-light btn-sm">Partidos</a>
+                <a href="lesiones.html" class="btn btn-outline-light btn-sm">Lesiones</a>
+            </div>
+        </div>
+    </nav>
+
     <div class="container mt-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Lesiones de Jugadores</h2>
@@ -43,7 +56,7 @@
                     datos.data.forEach(lesion => {
                         tbody.innerHTML += `
                         <tr>
-                            <td>${lesion.id_jugador}</td>
+                            <td>${lesion.nombre} ${lesion.apellidos}</td>                            
                             <td>${lesion.fecha_inicio}</td>
                             <td>${lesion.fecha_fin}</td>
                             <td>${lesion.tipo_lesion}</td>
@@ -143,6 +156,35 @@
                     }
                 });
         }
+
+        fetch('../backend/jugadores/get_jugadores.php')
+            .then(respuesta => respuesta.json())
+            .then(datos => {
+
+                if (datos.ok) {
+
+                    const selectAdd = document.getElementById('add-jugador');
+                    const selectEdit = document.getElementById('edit-jugador');
+
+                    datos.data.forEach(jugador => {
+
+                        selectAdd.innerHTML += `
+                <option value="${jugador.id_jugador}">
+                    ${jugador.nombre} ${jugador.apellidos}
+                </option>
+            `;
+
+                        selectEdit.innerHTML += `
+                <option value="${jugador.id_jugador}">
+                    ${jugador.nombre} ${jugador.apellidos}
+                </option>
+            `;
+
+                    });
+
+                }
+
+            });
     </script>
 
     <div class="modal fade" id="modalNuevo" tabindex="-1">
@@ -153,7 +195,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="text" id="add-jugador" class="form-control mb-2" placeholder="ID Jugador" required>
+                    <select id="add-jugador" class="form-control mb-2" required>
+                        <option value="">Selecciona un jugador</option>
+                    </select>
                     <input type="date" id="add-fecha-inicio" class="form-control mb-2" required>
                     <input type="date" id="add-fecha-fin" class="form-control mb-2">
                     <input type="text" id="add-tipo-lesion" class="form-control mb-2" placeholder="Tipo de lesión"
@@ -186,7 +230,9 @@
 
                     <input type="hidden" id="edit-id">
 
-                    <input type="text" id="edit-jugador" class="form-control mb-2" placeholder="ID Jugador" required>
+                    <select id="edit-jugador" class="form-control mb-2" required>
+                        <option value="">Selecciona un jugador</option>
+                    </select>
                     <input type="date" id="edit-fecha-inicio" class="form-control mb-2" required>
                     <input type="date" id="edit-fecha-fin" class="form-control mb-2">
                     <input type="text" id="edit-tipo-lesion" class="form-control mb-2" placeholder="Tipo de lesión"

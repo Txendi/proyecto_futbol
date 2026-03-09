@@ -10,7 +10,21 @@
 
 <body class="bg-light">
 
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container">
+            <span class="navbar-brand">Sistema SD Eibar</span>
+            <div>
+                <a href="dashboard.html" class="btn btn-outline-light btn-sm">Dashboard</a>
+                <a href="jugadores.html" class="btn btn-outline-light btn-sm">Jugadores</a>
+                <a href="temporadas.html" class="btn btn-outline-light btn-sm">Temporadas</a>
+                <a href="partidos.html" class="btn btn-outline-light btn-sm">Partidos</a>
+                <a href="lesiones.html" class="btn btn-outline-light btn-sm">Lesiones</a>
+            </div>
+        </div>
+    </nav>
+
     <div class="container mt-5">
+
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Jugadores SD Eibar</h2>
             <input type="text" id="search" class="form-control" placeholder="Buscar Jugador"
@@ -31,143 +45,10 @@
                     <th>Acciones</th>
                 </tr>
             </thead>
-            <tbody id="cuerpo-tabla">
+            <tbody id="lista-jugadores">
             </tbody>
         </table>
     </div>
-
-    <script>
-        fetch('../backend/jugadores/get_jugadores.php')
-            .then(respuesta => respuesta.json())
-            .then(datos => {
-                if (datos.ok) {
-                    const tbody = document.getElementById('cuerpo-tabla');
-                    datos.data.forEach(jugador => {
-                        tbody.innerHTML += `
-                        <tr>
-                            <td>${jugador.nombre}</td>
-                            <td>${jugador.apellidos}</td>
-                            <td>${jugador.alias}</td>
-                            <td>${jugador.posicion_habitual}</td>
-                            <td><span class="badge ${jugador.estado === 'lesionado' ? 'bg-danger' : 'bg-success'}">${jugador.estado}</span></td>
-                            <td><button class="btn btn-sm btn-warning" onclick="abrirEditar(${jugador.id_jugador}, '${jugador.nombre}', '${jugador.apellidos}', '${jugador.alias}', '${jugador.posicion_habitual}', '${jugador.estado}')">Editar</button>
-                                <button class="btn btn-sm btn-danger" onclick="borrar(${jugador.id_jugador})">Borrar</button></td>
-                        </tr>
-                    `;
-                    });
-                } else {
-                    alert("Error al cargar jugadores: " + datos.error);
-                }
-            });
-
-        function borrar(id) {
-            let mensaje = confirm("¿Seguro que quieres eliminar a este jugador?");
-
-            if (mensaje) {
-                fetch('../backend/jugadores/delete_jugador.php', {
-                    method: 'POST',
-                    body: JSON.stringify({ id_jugador: id })
-                })
-                    .then(respuesta => respuesta.json())
-                    .then(datos => {
-                        if (datos.ok) {
-                            window.location.reload();
-                        } else {
-                            alert("Error al borrar: " + datos.error);
-                        }
-                    });
-            }
-        }
-
-        function guardarNuevo() {
-            const datos = {
-                nombre: document.getElementById('add-nombre').value,
-                apellidos: document.getElementById('add-apellidos').value,
-                alias: document.getElementById('add-alias').value,
-                posicion_habitual: document.getElementById('add-posicion').value,
-                estado: document.getElementById('add-estado').value
-            };
-
-            fetch('../backend/jugadores/add_jugador.php', {
-                method: 'POST',
-                body: JSON.stringify(datos)
-            })
-                .then(respuesta => respuesta.json())
-                .then(resultado => {
-                    if (resultado.ok) {
-                        window.location.reload();
-                    } else {
-                        alert("Error al guardar: " + resultado.error);
-                    }
-                });
-        }
-
-        function abrirEditar(id, nombre, apellidos, alias, posicion, estado) {
-            document.getElementById('edit-id').value = id;
-            document.getElementById('edit-nombre').value = nombre;
-            document.getElementById('edit-apellidos').value = apellidos;
-            document.getElementById('edit-alias').value = alias;
-            document.getElementById('edit-posicion').value = posicion;
-            document.getElementById('edit-estado').value = estado;
-
-            const modal = new bootstrap.Modal(document.getElementById('modalEditar'));
-            modal.show();
-        }
-
-        function guardarEditar() {
-            const datos = {
-                id_jugador: document.getElementById('edit-id').value,
-                nombre: document.getElementById('edit-nombre').value,
-                apellidos: document.getElementById('edit-apellidos').value,
-                alias: document.getElementById('edit-alias').value,
-                posicion_habitual: document.getElementById('edit-posicion').value,
-                estado: document.getElementById('edit-estado').value
-            };
-
-            fetch('../backend/jugadores/update_jugador.php', {
-                method: 'POST',
-                body: JSON.stringify(datos)
-            })
-                .then(respuesta => respuesta.json())
-                .then(resultado => {
-                    if (resultado.ok) {
-                        window.location.reload();
-                    } else {
-                        alert("Error al editar: " + resultado.error);
-                    }
-                });
-        }
-
-        function filtrarJugadores() {
-            const busqueda = document.getElementById('search').value;
-
-            fetch(`../backend/jugadores/get_jugadores.php?query=${busqueda}`)
-                .then(respuesta => respuesta.json())
-                .then(datos => {
-                    const tbody = document.getElementById('cuerpo-tabla');
-                    tbody.innerHTML = "";
-
-                    if (datos.ok) {
-                        datos.data.forEach(jugador => {
-                            tbody.innerHTML += `
-                    <tr>
-                        <td>${jugador.nombre}</td>
-                        <td>${jugador.apellidos}</td>
-                        <td>${jugador.alias}</td>
-                        <td>${jugador.posicion_habitual}</td>
-                        <td><span class="badge ${jugador.estado === 'lesionado' ? 'bg-danger' : 'bg-success'}">${jugador.estado}</span></td>
-                        <td><button class="btn btn-sm btn-warning" onclick="abrirEditar(${jugador.id_jugador}, '${jugador.nombre}', '${jugador.apellidos}', '${jugador.alias}', '${jugador.posicion_habitual}', '${jugador.estado}')">Editar</button>
-                            <button class="btn btn-sm btn-danger" onclick="borrar(${jugador.id_jugador})">Borrar</button></td>
-                    </tr>
-                    `;
-                        });
-                    } else {
-                        alert("Error al cargar jugadores: " + datos.error);
-                    }
-                });
-        }
-
-    </script>
 
     <div class="modal fade" id="modalEditar" tabindex="-1">
         <div class="modal-dialog">
@@ -249,6 +130,139 @@
             </div>
         </div>
     </div>
+
+
+    <script>
+
+        fetch('../backend/jugadores/get_jugadores.php')
+            .then(respuesta => respuesta.json())
+            .then(datos => {
+                if (datos.ok) {
+                    listarJugadores(datos.data);
+                }
+            });
+
+        function listarJugadores(jugadores) {
+
+            const tbody = document.getElementById('lista-jugadores');
+            tbody.innerHTML = "";
+
+            jugadores.forEach(jugador => {
+                tbody.innerHTML += `
+        <tr>
+            <td>${jugador.nombre}</td>
+            <td>${jugador.apellidos}</td>
+            <td>${jugador.alias}</td>
+            <td>${jugador.posicion_habitual}</td>
+            <td><span class="badge bg-success">${jugador.estado}</span></td>
+            <td>
+                <button class="btn btn-sm btn-warning"
+                    onclick="abrirEditar(${jugador.id_jugador}, '${jugador.nombre}', '${jugador.apellidos}', '${jugador.alias}', '${jugador.posicion_habitual}', '${jugador.estado}')">
+                    Editar
+                </button>
+                <button class="btn btn-sm btn-danger"
+                    onclick="borrar(${jugador.id_jugador})">
+                    Borrar
+                </button>
+            </td>
+        </tr>
+        `;
+            });
+        }
+
+        function abrirEditar(id, nombre, apellidos, alias, posicion, estado) {
+            document.getElementById('edit-id').value = id;
+            document.getElementById('edit-nombre').value = nombre;
+            document.getElementById('edit-apellidos').value = apellidos;
+            document.getElementById('edit-alias').value = alias;
+            document.getElementById('edit-posicion').value = posicion;
+            document.getElementById('edit-estado').value = estado;
+
+            const modal = new bootstrap.Modal(document.getElementById('modalEditar'));
+            modal.show();
+        }
+
+        function guardarEditar() {
+            const datos = {
+                id_jugador: document.getElementById('edit-id').value,
+                nombre: document.getElementById('edit-nombre').value,
+                apellidos: document.getElementById('edit-apellidos').value,
+                alias: document.getElementById('edit-alias').value,
+                posicion_habitual: document.getElementById('edit-posicion').value,
+                estado: document.getElementById('edit-estado').value
+            };
+
+            fetch('../backend/jugadores/update_jugador.php', {
+                method: 'POST',
+                body: JSON.stringify(datos)
+            })
+                .then(respuesta => respuesta.json())
+                .then(resultado => {
+                    if (resultado.ok) {
+                        window.location.reload();
+                    } else {
+                        alert("Error al editar: " + resultado.error);
+                    }
+                });
+        }
+
+        function guardarNuevo() {
+            const datos = {
+                nombre: document.getElementById('add-nombre').value,
+                apellidos: document.getElementById('add-apellidos').value,
+                alias: document.getElementById('add-alias').value,
+                posicion_habitual: document.getElementById('add-posicion').value,
+                estado: document.getElementById('add-estado').value
+            };
+
+            fetch('../backend/jugadores/add_jugador.php', {
+                method: 'POST',
+                body: JSON.stringify(datos)
+            })
+                .then(respuesta => respuesta.json())
+                .then(resultado => {
+                    if (resultado.ok) {
+                        window.location.reload();
+                    } else {
+                        alert("Error al guardar: " + resultado.error);
+                    }
+                });
+        }
+
+        function borrar(id) {
+            let mensaje = confirm("¿Seguro que quieres eliminar a este jugador?");
+
+            if (mensaje) {
+                fetch('../backend/jugadores/delete_jugador.php', {
+                    method: 'POST',
+                    body: JSON.stringify({ id_jugador: id })
+                })
+                    .then(respuesta => respuesta.json())
+                    .then(datos => {
+                        if (datos.ok) {
+                            window.location.reload();
+                        } else {
+                            alert("Error al borrar: " + datos.error);
+                        }
+                    });
+            }
+        }
+
+        function filtrarJugadores() {
+
+            const busqueda = document.getElementById('search').value;
+
+            fetch(`../backend/jugadores/get_jugadores.php?query=${busqueda}`)
+                .then(respuesta => respuesta.json())
+                .then(datos => {
+                    if (datos.ok) {
+                        listarJugadores(datos.data);
+                    }
+                });
+        }
+
+    </script>
+
 
 </body>
 

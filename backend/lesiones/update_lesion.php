@@ -1,5 +1,5 @@
 <?php
-
+// mismas explicaciones sencillas en todos, basandote en jugadores
 require '../conexion.php';
 
 $input = file_get_contents('php://input');

@@ -1,5 +1,5 @@
 <?php
-
+// mismas explicaciones sencillas en todos, basandote en jugadores
 require '../conexion.php';
 
 $lesiones = [];
@@ -7,12 +7,22 @@ $lesiones = [];
 if (isset($_GET['id_jugador'])) {
     $id_jugador = $_GET['id_jugador'];
 
-    $sql = ('SELECT * FROM lesiones WHERE id_jugador = ?');
+    $sql = "SELECT lesiones.*, jugadores.nombre, jugadores.apellidos
+            FROM lesiones
+            JOIN jugadores
+            ON lesiones.id_jugador = jugadores.id_jugador
+            WHERE lesiones.id_jugador = ?";
+
     $stmt = $conexion->prepare($sql);
     $stmt->bind_param("i", $id_jugador);
 
 } else {
-    $sql = ('SELECT * FROM lesiones');
+    $sql = "SELECT lesiones.*, jugadores.nombre, jugadores.apellidos
+            FROM lesiones
+            JOIN jugadores
+            ON lesiones.id_jugador = jugadores.id_jugador
+            ORDER BY lesiones.fecha_inicio DESC";
+
     $stmt = $conexion->prepare($sql);
 }
 
