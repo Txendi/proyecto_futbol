@@ -78,7 +78,9 @@
                                 <td>${partido.goles_contra}</td>
                                 <td>
                                     <button class="btn btn-sm btn-warning" 
-                                        onclick="abrirEditar(${partido.id_partido}, ${partido.id_temporada}, \"${partido.rival}\", \"${partido.fecha}\", \"${partido.competicion}\", \"${partido.local_visitante}\", ${partido.goles_favor}, ${partido.goles_contra})"
+                                        onclick="abrirEditar(${partido.id_partido}, ${partido.id_temporada}, 
+                                        '${partido.rival}', '${partido.fecha}', '${partido.competicion}', 
+                                        '${partido.local_visitante}', ${partido.goles_favor}, ${partido.goles_contra})">
                                         Editar
                                     </button>
                                     <button class="btn btn-sm btn-danger"
