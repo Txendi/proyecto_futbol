@@ -1,5 +1,3 @@
-DROP DATABASE sistema_futbol;
-
 CREATE DATABASE sistema_futbol;
 
 USE sistema_futbol;
@@ -209,6 +207,16 @@ CREATE TABLE
         FOREIGN KEY (id_jugador) REFERENCES jugadores (id_jugador)
     );
 
+CREATE TABLE
+    importaciones_excel (
+        id_importacion INT AUTO_INCREMENT PRIMARY KEY,
+        id_partido INT NOT NULL,
+        nombre_archivo VARCHAR(255) NOT NULL,
+        ruta_archivo VARCHAR(255) NOT NULL,
+        fecha_subida TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (id_partido) REFERENCES partidos (id_partido)
+    );
+
 -- INSERTS de prueba
 INSERT INTO
     posiciones (codigo_posicion, nombre_posicion, linea)
@@ -254,14 +262,50 @@ INSERT INTO
         estado
     )
 VALUES
-    ('Lamine', 'Yamal', 'Lamine', 'EXT', 'activo'),
-    ('Robert', 'Lewandowski', 'Lewy', 'DC', 'activo');
+    ('Joseba', 'Bermejo', '', 'POR', 'activo'),
+    ('Unai', 'Ayala', 'Lunin', 'POR', 'activo'),
+    ('Anartz', 'Amilibia', 'Ami', 'LD', 'activo'),
+    ('Lucas', 'Sarasketa', 'Cabezon', 'LI', 'activo'),
+    ('Oier', 'Llorente', 'Txo', 'DFC', 'activo'),
+    ('Aitor', 'Larrañaga', 'Larra', 'DFC', 'activo'),
+    ('Llorenc', 'Ferres', 'Ferreti', 'LI', 'activo'),
+    ('Xavi', 'Pastor', 'Pastor', 'DFC', 'activo'),
+    ('Oscar', 'Garcia', 'Osito', 'MC', 'activo'),
+    ('Julen', 'Agirre', 'Jul', 'MCD', 'activo'),
+    ('Ibai', 'Asenjo', 'Txejo', 'MCO', 'activo'),
+    ('Asier', 'Santolaya', 'Santo', 'MCD', 'activo'),
+    ('Jon', 'Lopez', 'Jonlo', 'DC', 'activo'),
+    ('Marc', 'Delgado', '', 'MC', 'activo'),
+    ('Endika', 'Mateos', 'Bezana', 'EXTI', 'activo'),
+    ('Ekaitz', 'Redondo', 'Eka', 'DC', 'activo'),
+    ('Iker', 'Zubiria', 'Zubi', 'EXTD', 'activo'),
+    ('Marcos', 'Sotelo', 'Sote', 'EXTD', 'activo'),
+    ('Ekain', 'Etxebarria', 'Eka', 'DC', 'activo'),
+    ('Hugo', 'Garcia', 'Hugillo', 'EXTI', 'activo');
 
 INSERT INTO
     dorsales_jugador (id_dorsal, id_jugador, id_temporada, dorsal)
 VALUES
-    (1, 1, 1, 19),
-    (2, 2, 1, 9);
+    (1, 1, 1, 1),
+    (2, 2, 1, 13),
+    (3, 3, 1, 2),
+    (4, 4, 1, 3),
+    (5, 5, 1, 4),
+    (6, 6, 1, 5),
+    (7, 7, 1, 22),
+    (8, 8, 1, 23),
+    (9, 9, 1, 8),
+    (10, 10, 1, 6),
+    (11, 11, 1, 14),
+    (12, 12, 1, 16),
+    (13, 13, 1, 17),
+    (14, 14, 1, 21),
+    (15, 15, 1, 7),
+    (16, 16, 1, 9),
+    (17, 17, 1, 10),
+    (18, 18, 1, 11),
+    (19, 19, 1, 18),
+    (20, 20, 1, 19);
 
 INSERT INTO
     partidos (
@@ -276,10 +320,253 @@ INSERT INTO
 VALUES
     (
         1,
-        '2026-02-14',
-        'LaLiga',
-        'Getafe',
-        'local',
+        '2025-09-07',
+        'Segunda Federacion',
+        'SD Logroñes',
+        'Visitante',
         2,
         0
+    ),
+    (
+        1,
+        '2025-09-14',
+        'Segunda Federacion',
+        'Alfaro',
+        'Local',
+        4,
+        3
+    ),
+    (
+        1,
+        '2025-09-21',
+        'Segunda Federacion',
+        'Tudelano',
+        'Visitante',
+        1,
+        0
+    ),
+    (
+        1,
+        '2025-09-28',
+        'Segunda Federacion',
+        'Deportivo Alaves B',
+        'Local',
+        0,
+        1
+    ),
+    (
+        1,
+        '2025-10-05',
+        'Segunda Federacion',
+        'Naxara',
+        'Visitante',
+        1,
+        1
+    ),
+    (
+        1,
+        '2025-10-11',
+        'Segunda Federacion',
+        'Ejea',
+        'Local',
+        2,
+        1
+    ),
+    (
+        1,
+        '2025-10-18',
+        'Segunda Federacion',
+        'Beasain KE',
+        'Visitante',
+        1,
+        2
+    ),
+    (
+        1,
+        '2025-10-25',
+        'Segunda Federacion',
+        'Reaul Union Club',
+        'Local',
+        0,
+        1
+    ),
+    (
+        1,
+        '2025-11-02',
+        'Segunda Federacion',
+        'CD Ebro',
+        'Visitante',
+        1,
+        1
+    ),
+    (
+        1,
+        '2025-11-08',
+        'Segunda Federacion',
+        'Mutilvera',
+        'Local',
+        1,
+        2
+    ),
+    (
+        1,
+        '2025-11-16',
+        'Segunda Federacion',
+        'UD Logroñes',
+        'Visitante',
+        0,
+        1
+    ),
+    (
+        1,
+        '2025-11-22',
+        'Segunda Federacion',
+        'Sestao River',
+        'Visitante',
+        1,
+        0
+    ),
+    (
+        1,
+        '2025-11-02',
+        'Segunda Federacion',
+        'Deportivo Aragon',
+        'Local',
+        1,
+        0
+    ),
+    (
+        1,
+        '2025-12-06',
+        'Segunda Federacion',
+        'CD Basconia',
+        'Visitante',
+        1,
+        1
+    ),
+    (
+        1,
+        '2025-12-13',
+        'Segunda Federacion',
+        'SD Amorebieta',
+        'Local',
+        0,
+        2
+    ),
+    (
+        1,
+        '2025-12-20',
+        'Segunda Federacion',
+        'SD Gernika',
+        'Visitante',
+        1,
+        2
+    ),
+    (
+        1,
+        '2026-01-04',
+        'Segunda Federacion',
+        'Utebo',
+        'Local',
+        1,
+        1
+    ),
+    (
+        1,
+        '2026-01-11',
+        'Segunda Federacion',
+        'CD Alfaro',
+        'Visitante',
+        0,
+        0
+    ),
+    (
+        1,
+        '2026-01-17',
+        'Segunda Federacion',
+        'SD Logroñes',
+        'Local',
+        0,
+        0
+    ),
+    (
+        1,
+        '2026-01-04',
+        'Segunda Federacion',
+        'Deportivo Alaves B',
+        'Visitante',
+        2,
+        0
+    ),
+    (
+        1,
+        '2026-01-31',
+        'Segunda Federacion',
+        'Tudelano',
+        'Local',
+        1,
+        0
+    ),
+    (
+        1,
+        '2026-02-08',
+        'Segunda Federacion',
+        'Deportivo Aragon',
+        'Visitante',
+        0,
+        1
+    ),
+    (
+        1,
+        '2026-02-15',
+        'Segunda Federacion',
+        'CD Basconia',
+        'Local',
+        1,
+        3
+    ),
+    (
+        1,
+        '2026-02-21',
+        'Segunda Federacion',
+        'Real Union Club',
+        'Visitante',
+        2,
+        1
+    ),
+    (
+        1,
+        '2026-02-28',
+        'Segunda Federacion',
+        'SD Gernika',
+        'Local',
+        3,
+        2
+    ),
+    (
+        1,
+        '2026-03-07',
+        'Segunda Federacion',
+        'Sestao River',
+        'Local',
+        2,
+        1
+    ),
+    (
+        1,
+        '2026-03-14',
+        'Segunda Federacion',
+        'Mutilvera',
+        'Visitante',
+        4,
+        0
+    ),
+    (
+        1,
+        '2026-03-21',
+        'Segunda Federacion',
+        'Beasain KE',
+        'Local',
+        0,
+        1
     );

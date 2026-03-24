@@ -10,41 +10,61 @@
 
 <body class="bg-light">
 
-    <nav class="navbar navbar-dark bg-dark mb-4">
-        <div class="container">
-            <span class="navbar-brand">Sistema SD Eibar</span>
-            <div>
-                <a href="dashboard.html" class="btn btn-outline-light btn-sm">Dashboard</a>
-                <a href="jugadores.html" class="btn btn-outline-light btn-sm">Jugadores</a>
-                <a href="temporadas.html" class="btn btn-outline-light btn-sm">Temporadas</a>
-                <a href="partidos.html" class="btn btn-outline-light btn-sm">Partidos</a>
-                <a href="lesiones.html" class="btn btn-outline-light btn-sm">Lesiones</a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container py-2">
+            <a class="navbar-brand fw-bold" href="dashboard.html">Sistema SD Eibar</a>
+
+            <div class="d-flex flex-wrap gap-2">
+                <a href="dashboard.html" class="btn btn-outline-light btn-sm rounded-pill">Dashboard</a>
+                <a href="jugadores.html" class="btn btn-outline-light btn-sm rounded-pill">Jugadores</a>
+                <a href="temporadas.html" class="btn btn-outline-light btn-sm rounded-pill">Temporadas</a>
+                <a href="partidos.html" class="btn btn-outline-light btn-sm rounded-pill">Partidos</a>
+                <a href="lesiones.html" class="btn btn-light btn-sm rounded-pill fw-semibold">Lesiones</a>
+                <a href="excel.html" class="btn btn-outline-light btn-sm rounded-pill">Excel</a>
+                <a href="importaciones.html" class="btn btn-outline-light btn-sm rounded-pill">Importaciones</a>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Lesiones de Jugadores</h2>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevo">
-                + Añadir Lesión
-            </button>
-        </div>
+    <div class="container py-5">
+        <div class="card border-0 shadow-lg rounded-4">
+            <div class="card-body p-4">
 
-        <table class="table table-striped table-bordered bg-white shadow-sm text-center">
-            <thead class="table-dark">
-                <tr>
-                    <th>Jugador</th>
-                    <th>Fecha Inicio</th>
-                    <th>Fecha Fin</th>
-                    <th>Tipo de Lesión</th>
-                    <th>Gravedad</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="cuerpo-tabla">
-            </tbody>
-        </table>
+                <div class="row g-3 align-items-center mb-4">
+                    <div class="col-12 col-lg-8">
+                        <div>
+                            <h2 class="fw-bold mb-1">Lesiones</h2>
+                            <p class="text-muted mb-0">Gestión de las lesiones registradas en el sistema</p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-4 text-lg-end">
+                        <button class="btn btn-primary btn-lg px-4 rounded-3 shadow-sm" data-bs-toggle="modal"
+                            data-bs-target="#modalNuevo">
+                            + Añadir Lesión
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle text-center mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Jugador</th>
+                                <th>Fecha Inicio</th>
+                                <th>Fecha Fin</th>
+                                <th>Tipo de Lesión</th>
+                                <th>Gravedad</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpo-tabla">
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
     </div>
 
     <script>
@@ -53,17 +73,33 @@
             .then(datos => {
                 if (datos.ok) {
                     const tbody = document.getElementById('cuerpo-tabla');
+                    tbody.innerHTML = "";
+
                     datos.data.forEach(lesion => {
+                        let badgeGravedad = lesion.gravedad === 'grave'
+                            ? '<span class="badge rounded-pill text-bg-danger px-3 py-2">Grave</span>'
+                            : lesion.gravedad === 'moderada'
+                                ? '<span class="badge rounded-pill text-bg-warning px-3 py-2">Moderada</span>'
+                                : '<span class="badge rounded-pill text-bg-success px-3 py-2">Leve</span>';
+
                         tbody.innerHTML += `
                         <tr>
-                            <td>${lesion.nombre} ${lesion.apellidos}</td>                            
+                            <td>${lesion.nombre} ${lesion.apellidos}</td>
                             <td>${lesion.fecha_inicio}</td>
-                            <td>${lesion.fecha_fin}</td>
+                            <td>${lesion.fecha_fin ?? ''}</td>
                             <td>${lesion.tipo_lesion}</td>
-                            <td>${lesion.gravedad}</td>
+                            <td>${badgeGravedad}</td>
                             <td>
-                                <button class="btn btn-sm btn-warning" onclick="abrirEditar(${lesion.id_lesion}, ${lesion.id_jugador}, '${lesion.fecha_inicio}', '${lesion.fecha_fin ?? ''}', '${lesion.tipo_lesion}', '${lesion.gravedad}', '${lesion.fecha_prevista_retorno ?? ''}', '${(lesion.observaciones ?? '').replace(/'/g, "\\'")}')">Editar</button>
-                                <button class="btn btn-sm btn-danger" onclick="borrarLesion(${lesion.id_lesion})">Borrar</button>
+                                <div class="d-flex justify-content-center gap-2">
+                                    <button class="btn btn-sm btn-outline-warning rounded-pill px-3"
+                                        onclick="abrirEditar(${lesion.id_lesion}, ${lesion.id_jugador}, '${lesion.fecha_inicio}', '${lesion.fecha_fin ?? ''}', '${(lesion.tipo_lesion ?? '').replace(/'/g, "\\'")}', '${lesion.gravedad}', '${lesion.fecha_prevista_retorno ?? ''}', '${(lesion.observaciones ?? '').replace(/'/g, "\\'")}')">
+                                        Editar
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger rounded-pill px-3"
+                                        onclick="borrarLesion(${lesion.id_lesion})">
+                                        Borrar
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     `;
@@ -86,6 +122,9 @@
 
             fetch('../backend/lesiones/add_lesion.php', {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(datos)
             })
                 .then(respuesta => respuesta.json())
@@ -160,99 +199,90 @@
         fetch('../backend/jugadores/get_jugadores.php')
             .then(respuesta => respuesta.json())
             .then(datos => {
-
                 if (datos.ok) {
-
                     const selectAdd = document.getElementById('add-jugador');
                     const selectEdit = document.getElementById('edit-jugador');
 
                     datos.data.forEach(jugador => {
-
                         selectAdd.innerHTML += `
-                <option value="${jugador.id_jugador}">
-                    ${jugador.nombre} ${jugador.apellidos}
-                </option>
-            `;
+                            <option value="${jugador.id_jugador}">
+                                ${jugador.nombre} ${jugador.apellidos}
+                            </option>
+                        `;
 
                         selectEdit.innerHTML += `
-                <option value="${jugador.id_jugador}">
-                    ${jugador.nombre} ${jugador.apellidos}
-                </option>
-            `;
-
+                            <option value="${jugador.id_jugador}">
+                                ${jugador.nombre} ${jugador.apellidos}
+                            </option>
+                        `;
                     });
-
                 }
-
             });
     </script>
 
     <div class="modal fade" id="modalNuevo" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Añadir Lesión</h5>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow rounded-4">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Añadir Lesión</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <select id="add-jugador" class="form-control mb-2" required>
+                <div class="modal-body pt-3">
+                    <select id="add-jugador" class="form-select form-select-lg rounded-3 mb-3" required>
                         <option value="">Selecciona un jugador</option>
                     </select>
-                    <input type="date" id="add-fecha-inicio" class="form-control mb-2" required>
-                    <input type="date" id="add-fecha-fin" class="form-control mb-2">
-                    <input type="text" id="add-tipo-lesion" class="form-control mb-2" placeholder="Tipo de lesión"
+                    <input type="date" id="add-fecha-inicio" class="form-control form-control-lg rounded-3 mb-3"
                         required>
-                    <select id="add-gravedad" class="form-control mb-2" required>
+                    <input type="date" id="add-fecha-fin" class="form-control form-control-lg rounded-3 mb-3">
+                    <input type="text" id="add-tipo-lesion" class="form-control form-control-lg rounded-3 mb-3"
+                        placeholder="Tipo de lesión" required>
+                    <select id="add-gravedad" class="form-select form-select-lg rounded-3 mb-3" required>
                         <option value="leve">Leve</option>
                         <option value="moderada">Moderada</option>
                         <option value="grave">Grave</option>
                     </select>
-                    <input type="date" id="add-fecha-prevista" class="form-control mb-2">
-                    <textarea id="add-observaciones" class="form-control mb-2" placeholder="Observaciones"></textarea>
+                    <input type="date" id="add-fecha-prevista" class="form-control form-control-lg rounded-3 mb-3">
+                    <textarea id="add-observaciones" class="form-control rounded-3 mb-3" placeholder="Observaciones"
+                        rows="3"></textarea>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="guardarNuevo()">Guardar</button>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-primary px-4 rounded-3"
+                        onclick="guardarNuevo()">Guardar</button>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="modal fade" id="modalEditar" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title">Editar Lesión</h5>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow rounded-4">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Editar Lesión</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
-                <div class="modal-body">
-
+                <div class="modal-body pt-3">
                     <input type="hidden" id="edit-id">
 
-                    <select id="edit-jugador" class="form-control mb-2" required>
+                    <select id="edit-jugador" class="form-select form-select-lg rounded-3 mb-3" required>
                         <option value="">Selecciona un jugador</option>
                     </select>
-                    <input type="date" id="edit-fecha-inicio" class="form-control mb-2" required>
-                    <input type="date" id="edit-fecha-fin" class="form-control mb-2">
-                    <input type="text" id="edit-tipo-lesion" class="form-control mb-2" placeholder="Tipo de lesión"
+                    <input type="date" id="edit-fecha-inicio" class="form-control form-control-lg rounded-3 mb-3"
                         required>
-
-                    <select id="edit-gravedad" class="form-control mb-2" required>
+                    <input type="date" id="edit-fecha-fin" class="form-control form-control-lg rounded-3 mb-3">
+                    <input type="text" id="edit-tipo-lesion" class="form-control form-control-lg rounded-3 mb-3"
+                        placeholder="Tipo de lesión" required>
+                    <select id="edit-gravedad" class="form-select form-select-lg rounded-3 mb-3" required>
                         <option value="leve">Leve</option>
                         <option value="moderada">Moderada</option>
                         <option value="grave">Grave</option>
                     </select>
-
-                    <input type="date" id="edit-fecha-prevista" class="form-control mb-2">
-                    <textarea id="edit-observaciones" class="form-control mb-2" placeholder="Observaciones"></textarea>
-
+                    <input type="date" id="edit-fecha-prevista" class="form-control form-control-lg rounded-3 mb-3">
+                    <textarea id="edit-observaciones" class="form-control rounded-3 mb-3" placeholder="Observaciones"
+                        rows="3"></textarea>
                 </div>
-
-                <div class="modal-footer">
-                    <button class="btn btn-primary" onclick="guardarEditar()">Guardar cambios</button>
+                <div class="modal-footer border-0 pt-0">
+                    <button class="btn btn-primary px-4 rounded-3" onclick="guardarEditar()">Guardar cambios</button>
                 </div>
-
             </div>
         </div>
     </div>

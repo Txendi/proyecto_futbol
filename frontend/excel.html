@@ -9,34 +9,91 @@
 
 <body class="bg-light">
 
-    <nav class="navbar navbar-dark bg-dark mb-4">
-        <div class="container">
-            <span class="navbar-brand">Sistema SD Eibar</span>
-            <div>
-                <a href="dashboard.html" class="btn btn-outline-light btn-sm">Dashboard</a>
-                <a href="jugadores.html" class="btn btn-outline-light btn-sm">Jugadores</a>
-                <a href="temporadas.html" class="btn btn-outline-light btn-sm">Temporadas</a>
-                <a href="partidos.html" class="btn btn-outline-light btn-sm">Partidos</a>
-                <a href="lesiones.html" class="btn btn-outline-light btn-sm">Lesiones</a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container py-2">
+            <a class="navbar-brand fw-bold" href="dashboard.html">Sistema SD Eibar</a>
+
+            <div class="d-flex flex-wrap gap-2">
+                <a href="dashboard.html" class="btn btn-outline-light btn-sm rounded-pill">Dashboard</a>
+                <a href="jugadores.html" class="btn btn-outline-light btn-sm rounded-pill">Jugadores</a>
+                <a href="temporadas.html" class="btn btn-outline-light btn-sm rounded-pill">Temporadas</a>
+                <a href="partidos.html" class="btn btn-outline-light btn-sm rounded-pill">Partidos</a>
+                <a href="lesiones.html" class="btn btn-outline-light btn-sm rounded-pill">Lesiones</a>
+                <a href="excel.html" class="btn btn-light btn-sm rounded-pill fw-semibold">Excel</a>
+                <a href="importaciones.html" class="btn btn-outline-light btn-sm rounded-pill">Importaciones</a>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-5">
-        <div class="card shadow-sm">
-            <div class="card-header bg-dark text-white">
-                <h4 class="mb-0">Subir archivo Excel</h4>
-            </div>
+    <div class="container py-5">
+        <div class="card border-0 shadow-lg rounded-4">
+            <div class="card-body p-4">
 
-            <div class="card-body">
+                <div class="row g-3 align-items-center mb-4">
+                    <div class="col-12 col-lg-6">
+                        <div>
+                            <h2 class="fw-bold mb-1">Importar Excel</h2>
+                            <p class="text-muted mb-0">Sube un archivo Excel y asígnalo a un partido del sistema</p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 text-lg-end">
+                        <a href="importaciones.html" class="btn btn-outline-dark btn-lg px-4 rounded-3">
+                            Ver historial de importaciones
+                        </a>
+                    </div>
+                </div>
+
                 <form action="../backend/upload_excel.php" method="POST" enctype="multipart/form-data">
-                    <input type="file" name="excel" class="form-control mb-3" accept=".xls,.xlsx" required>
+                    <div class="row g-4">
+                        <div class="col-12 col-lg-6">
+                            <label for="select-partido" class="form-label fw-semibold">Selecciona un partido</label>
+                            <select name="id_partido" id="select-partido" class="form-select form-select-lg rounded-3" required>
+                                <option value="" disabled selected>Selecciona un partido</option>
+                            </select>
+                        </div>
 
-                    <button type="submit" class="btn btn-primary">Subir archivo</button>
+                        <div class="col-12 col-lg-6">
+                            <label for="excel" class="form-label fw-semibold">Archivo Excel</label>
+                            <input type="file" name="excel" id="excel" class="form-control form-control-lg rounded-3"
+                                accept=".xls,.xlsx" required>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex flex-wrap gap-3">
+                        <button type="submit" class="btn btn-primary btn-lg px-4 rounded-3 shadow-sm">
+                            Subir archivo
+                        </button>
+
+                        <a href="partidos.html" class="btn btn-outline-secondary btn-lg px-4 rounded-3">
+                            Ir a partidos
+                        </a>
+                    </div>
                 </form>
+
             </div>
         </div>
     </div>
+
+    <script>
+        fetch('../backend/partidos/get_partidos.php')
+            .then(respuesta => respuesta.json())
+            .then(datos => {
+                if (datos.ok) {
+                    const select = document.getElementById('select-partido');
+
+                    datos.data.forEach(partido => {
+                        select.innerHTML += `
+                            <option value="${partido.id_partido}">
+                                ${partido.fecha} - ${partido.rival} (${partido.competicion})
+                            </option>
+                        `;
+                    });
+                } else {
+                    alert("Error al cargar partidos: " + datos.error);
+                }
+            });
+    </script>
 
 </body>
 

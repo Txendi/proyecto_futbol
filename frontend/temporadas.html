@@ -10,78 +10,205 @@
 
 <body class="bg-light">
 
-    <nav class="navbar navbar-dark bg-dark mb-4">
-        <div class="container">
-            <span class="navbar-brand">Sistema SD Eibar</span>
-            <div>
-                <a href="dashboard.html" class="btn btn-outline-light btn-sm">Dashboard</a>
-                <a href="jugadores.html" class="btn btn-outline-light btn-sm">Jugadores</a>
-                <a href="temporadas.html" class="btn btn-outline-light btn-sm">Temporadas</a>
-                <a href="partidos.html" class="btn btn-outline-light btn-sm">Partidos</a>
-                <a href="lesiones.html" class="btn btn-outline-light btn-sm">Lesiones</a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container py-2">
+            <a class="navbar-brand fw-bold" href="dashboard.html">Sistema SD Eibar</a>
+
+            <div class="d-flex flex-wrap gap-2">
+                <a href="dashboard.html" class="btn btn-outline-light btn-sm rounded-pill">Dashboard</a>
+                <a href="jugadores.html" class="btn btn-outline-light btn-sm rounded-pill">Jugadores</a>
+                <a href="temporadas.html" class="btn btn-light btn-sm rounded-pill fw-semibold">Temporadas</a>
+                <a href="partidos.html" class="btn btn-outline-light btn-sm rounded-pill">Partidos</a>
+                <a href="lesiones.html" class="btn btn-outline-light btn-sm rounded-pill">Lesiones</a>
+                <a href="excel.html" class="btn btn-outline-light btn-sm rounded-pill">Excel</a>
+                <a href="importaciones.html" class="btn btn-outline-light btn-sm rounded-pill">Importaciones</a>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Temporadas SD Eibar</h2>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNuevo">
-                + Añadir Temporada
-            </button>
-        </div>
+    <div class="container py-5">
+        <div class="card border-0 shadow-lg rounded-4">
+            <div class="card-body p-4">
 
-        <table class="table table-striped table-bordered bg-white shadow-sm text-center">
-            <thead class="table-dark">
-                <tr>
-                    <th>Nombre</th>
-                    <th>Inicio</th>
-                    <th>Fin</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="cuerpo-tabla">
-            </tbody>
-        </table>
+                <div class="row g-3 align-items-center mb-4">
+                    <div class="col-12 col-lg-4">
+                        <div>
+                            <h2 class="fw-bold mb-1">Temporadas</h2>
+                            <p class="text-muted mb-0">Gestión de las temporadas registradas en el sistema</p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-4">
+                        <input type="text" id="search" class="form-control form-control-lg rounded-3"
+                            placeholder="Buscar temporada..." oninput="filtrarTemporadas()">
+                    </div>
+
+                    <div class="col-12 col-lg-4 text-lg-end">
+                        <button class="btn btn-primary btn-lg px-4 rounded-3 shadow-sm"
+                            data-bs-toggle="modal" data-bs-target="#modalNuevo">
+                            + Añadir Temporada
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle text-center mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Fecha Inicio</th>
+                                <th>Fecha Fin</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lista-temporadas">
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalEditar" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow rounded-4">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Editar Temporada</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body pt-3">
+                    <input type="hidden" id="edit-id">
+
+                    <input type="text" id="edit-nombre" class="form-control form-control-lg rounded-3 mb-3"
+                        placeholder="Nombre de la temporada" required>
+
+                    <input type="date" id="edit-fecha-inicio" class="form-control form-control-lg rounded-3 mb-3"
+                        required>
+
+                    <input type="date" id="edit-fecha-fin" class="form-control form-control-lg rounded-3 mb-3"
+                        required>
+                </div>
+
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-primary px-4 rounded-3"
+                        onclick="guardarEditar()">Guardar cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalNuevo" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow rounded-4">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Añadir Temporada</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body pt-3">
+                    <input type="text" id="add-nombre" class="form-control form-control-lg rounded-3 mb-3"
+                        placeholder="Nombre de la temporada" required>
+
+                    <input type="date" id="add-fecha-inicio" class="form-control form-control-lg rounded-3 mb-3"
+                        required>
+
+                    <input type="date" id="add-fecha-fin" class="form-control form-control-lg rounded-3 mb-3"
+                        required>
+                </div>
+
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-primary px-4 rounded-3"
+                        onclick="guardarNuevo()">Guardar</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-
         fetch('../backend/temporadas/get_temporadas.php')
             .then(respuesta => respuesta.json())
             .then(datos => {
                 if (datos.ok) {
-                    const tbody = document.getElementById('cuerpo-tabla');
-                    datos.data.forEach(temporada => {
-                        tbody.innerHTML += `
-                        <tr>
-                            <td>${temporada.nombre}</td>
-                            <td>${temporada.fecha_inicio}</td>
-                            <td>${temporada.fecha_fin}</td>
-                            <td><span class="badge ${temporada.activa ? 'bg-success' : 'bg-danger'}">${temporada.activa ? 'Activa' : 'Inactiva'}</span></td>
-                            <td>
-                                <button class="btn btn-sm btn-warning" onclick="abrirEditar(${temporada.id_temporada}, '${temporada.nombre}', '${temporada.fecha_inicio}', '${temporada.fecha_fin}', ${temporada.activa})">Editar</button>
-                                <button class="btn btn-sm btn-danger" onclick="borrarTemporada(${temporada.id_temporada})">Borrar</button>
-                            </td>
-                        </tr>
-                    `;
-                    });
-                } else {
-                    alert("Error al cargar temporadas: " + datos.error);
+                    listarTemporadas(datos.data);
                 }
             });
+
+        function listarTemporadas(temporadas) {
+            const tbody = document.getElementById('lista-temporadas');
+            tbody.innerHTML = "";
+
+            temporadas.forEach(temporada => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${temporada.nombre}</td>
+                        <td>${temporada.fecha_inicio}</td>
+                        <td>${temporada.fecha_fin}</td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-2">
+                                <button class="btn btn-sm btn-outline-warning rounded-pill px-3"
+                                    onclick="abrirEditar(${temporada.id_temporada}, '${temporada.nombre}', '${temporada.fecha_inicio}', '${temporada.fecha_fin}')">
+                                    Editar
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger rounded-pill px-3"
+                                    onclick="borrar(${temporada.id_temporada})">
+                                    Borrar
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function abrirEditar(id, nombre, fecha_inicio, fecha_fin) {
+            document.getElementById('edit-id').value = id;
+            document.getElementById('edit-nombre').value = nombre;
+            document.getElementById('edit-fecha-inicio').value = fecha_inicio;
+            document.getElementById('edit-fecha-fin').value = fecha_fin;
+
+            const modal = new bootstrap.Modal(document.getElementById('modalEditar'));
+            modal.show();
+        }
+
+        function guardarEditar() {
+            const datos = {
+                id_temporada: document.getElementById('edit-id').value,
+                nombre: document.getElementById('edit-nombre').value,
+                fecha_inicio: document.getElementById('edit-fecha-inicio').value,
+                fecha_fin: document.getElementById('edit-fecha-fin').value
+            };
+
+            fetch('../backend/temporadas/update_temporada.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(datos)
+            })
+                .then(respuesta => respuesta.json())
+                .then(resultado => {
+                    if (resultado.ok) {
+                        window.location.reload();
+                    } else {
+                        alert("Error al editar: " + resultado.error);
+                    }
+                });
+        }
 
         function guardarNuevo() {
             const datos = {
                 nombre: document.getElementById('add-nombre').value,
                 fecha_inicio: document.getElementById('add-fecha-inicio').value,
-                fecha_fin: document.getElementById('add-fecha-fin').value,
-                activa: document.getElementById('add-activa').checked
+                fecha_fin: document.getElementById('add-fecha-fin').value
             };
 
             fetch('../backend/temporadas/add_temporada.php', {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(datos)
             })
                 .then(respuesta => respuesta.json())
@@ -94,126 +221,40 @@
                 });
         }
 
-        function borrarTemporada(id) {
+        function borrar(id) {
+            let mensaje = confirm("¿Seguro que quieres eliminar esta temporada?");
 
-            let confirmar = confirm("¿Seguro que quieres eliminar esta temporada?");
-
-            if (confirmar) {
-
+            if (mensaje) {
                 fetch('../backend/temporadas/delete_temporada.php', {
                     method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
                     body: JSON.stringify({ id_temporada: id })
                 })
                     .then(respuesta => respuesta.json())
                     .then(datos => {
-
                         if (datos.ok) {
                             window.location.reload();
                         } else {
                             alert("Error al borrar: " + datos.error);
                         }
-
                     });
-
             }
         }
 
-        function abrirEditar(id, nombre, inicio, fin, activa) {
+        function filtrarTemporadas() {
+            const busqueda = document.getElementById('search').value;
 
-            document.getElementById('edit-id').value = id;
-            document.getElementById('edit-nombre').value = nombre;
-            document.getElementById('edit-fecha-inicio').value = inicio;
-            document.getElementById('edit-fecha-fin').value = fin;
-            document.getElementById('edit-activa').checked = activa == 1;
-
-            const modal = new bootstrap.Modal(document.getElementById('modalEditar'));
-            modal.show();
-        }
-
-        function guardarEditar() {
-
-            const datos = {
-                id_temporada: document.getElementById('edit-id').value,
-                nombre: document.getElementById('edit-nombre').value,
-                fecha_inicio: document.getElementById('edit-fecha-inicio').value,
-                fecha_fin: document.getElementById('edit-fecha-fin').value,
-                activa: document.getElementById('edit-activa').checked
-            };
-
-            fetch('../backend/temporadas/update_temporada.php', {
-                method: 'POST',
-                body: JSON.stringify(datos)
-            })
+            fetch(`../backend/temporadas/get_temporadas.php?query=${busqueda}`)
                 .then(respuesta => respuesta.json())
-                .then(resultado => {
-
-                    if (resultado.ok) {
-                        window.location.reload();
-                    } else {
-                        alert("Error al editar: " + resultado.error);
+                .then(datos => {
+                    if (datos.ok) {
+                        listarTemporadas(datos.data);
                     }
-
                 });
         }
-
     </script>
-
-    <div class="modal fade" id="modalNuevo" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Añadir Temporada</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="text" id="add-nombre" class="form-control mb-2" placeholder="Nombre" required>
-                    <input type="date" id="add-fecha-inicio" class="form-control mb-2" required>
-                    <input type="date" id="add-fecha-fin" class="form-control mb-2" required>
-                    <div>
-                        <input type="checkbox" id="add-activa" class="form-check-input">
-                        <label for="add-activa" class="form-check-label">Activa</label>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="guardarNuevo()">Guardar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalEditar" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title">Editar Temporada</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-
-                <div class="modal-body">
-
-                    <input type="hidden" id="edit-id">
-
-                    <input type="text" id="edit-nombre" class="form-control mb-2" placeholder="Nombre">
-
-                    <input type="date" id="edit-fecha-inicio" class="form-control mb-2">
-
-                    <input type="date" id="edit-fecha-fin" class="form-control mb-2">
-
-                    <div>
-                        <input type="checkbox" id="edit-activa" class="form-check-input">
-                        <label class="form-check-label">Activa</label>
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn btn-primary" onclick="guardarEditar()">Guardar cambios</button>
-                </div>
-
-            </div>
-        </div>
-    </div>
 
 </body>
 

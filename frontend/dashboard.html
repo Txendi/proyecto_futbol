@@ -9,76 +9,158 @@
 
 <body class="bg-light">
 
-    <nav class="navbar navbar-dark bg-dark mb-4">
-        <div class="container">
-            <span class="navbar-brand">Sistema SD Eibar</span>
-            <div>
-                <a href="dashboard.html" class="btn btn-outline-light btn-sm">Dashboard</a>
-                <a href="jugadores.html" class="btn btn-outline-light btn-sm">Jugadores</a>
-                <a href="temporadas.html" class="btn btn-outline-light btn-sm">Temporadas</a>
-                <a href="partidos.html" class="btn btn-outline-light btn-sm">Partidos</a>
-                <a href="lesiones.html" class="btn btn-outline-light btn-sm">Lesiones</a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container py-2">
+            <a class="navbar-brand fw-bold" href="dashboard.html">Sistema SD Eibar</a>
+
+            <div class="d-flex flex-wrap gap-2">
+                <a href="dashboard.html" class="btn btn-light btn-sm rounded-pill fw-semibold">Dashboard</a>
+                <a href="jugadores.html" class="btn btn-outline-light btn-sm rounded-pill">Jugadores</a>
+                <a href="temporadas.html" class="btn btn-outline-light btn-sm rounded-pill">Temporadas</a>
+                <a href="partidos.html" class="btn btn-outline-light btn-sm rounded-pill">Partidos</a>
+                <a href="lesiones.html" class="btn btn-outline-light btn-sm rounded-pill">Lesiones</a>
+                <a href="excel.html" class="btn btn-outline-light btn-sm rounded-pill">Excel</a>
+                <a href="importaciones.html" class="btn btn-outline-light btn-sm rounded-pill">Importaciones</a>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-5">
-        <h1 class="mb-4 text-center">Dashboard SD Eibar</h1>
+    <div class="container py-5">
 
-        <div class="row g-4 mb-4">
-            <div class="col-md-3">
-                <div class="card text-center shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">Jugadores</h5>
-                        <p class="display-6" id="total-jugadores">0</p>
+        <div class="card border-0 shadow-lg rounded-4 mb-4">
+            <div class="card-body p-4 p-lg-5">
+                <div class="row align-items-center g-4">
+                    <div class="col-12 col-lg-8">
+                        <h1 class="fw-bold mb-2">Dashboard SD Eibar</h1>
+                        <p class="text-muted mb-0 fs-5">
+                            Panel principal del sistema de gestión de jugadores, temporadas, partidos, lesiones e importaciones Excel.
+                        </p>
                     </div>
-                </div>
-            </div>
 
-            <div class="col-md-3">
-                <div class="card text-center shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">Temporadas</h5>
-                        <p class="display-6" id="total-temporadas">0</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card text-center shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">Partidos</h5>
-                        <p class="display-6" id="total-partidos">0</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card text-center shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">Lesiones</h5>
-                        <p class="display-6" id="total-lesiones">0</p>
+                    <div class="col-12 col-lg-4 text-lg-end">
+                        <a href="excel.html" class="btn btn-primary btn-lg px-4 rounded-3 shadow-sm">
+                            Subir Excel
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="row g-3">
-            <div class="col-md-4">
-                <a href="jugadores.html" class="btn btn-primary w-100">Ir a Jugadores</a>
+        <div class="row g-4 mb-4">
+            <div class="col-12 col-md-6 col-xl-3">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-body p-4 text-center">
+                        <p class="text-muted fw-semibold mb-2">Jugadores</p>
+                        <h2 class="display-5 fw-bold mb-0" id="total-jugadores">0</h2>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4">
-                <a href="temporadas.html" class="btn btn-primary w-100">Ir a Temporadas</a>
+
+            <div class="col-12 col-md-6 col-xl-3">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-body p-4 text-center">
+                        <p class="text-muted fw-semibold mb-2">Temporadas</p>
+                        <h2 class="display-5 fw-bold mb-0" id="total-temporadas">0</h2>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4">
-                <a href="partidos.html" class="btn btn-primary w-100">Ir a Partidos</a>
+
+            <div class="col-12 col-md-6 col-xl-3">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-body p-4 text-center">
+                        <p class="text-muted fw-semibold mb-2">Partidos</p>
+                        <h2 class="display-5 fw-bold mb-0" id="total-partidos">0</h2>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-6">
-                <a href="lesiones.html" class="btn btn-secondary w-100">Ir a Lesiones</a>
+
+            <div class="col-12 col-md-6 col-xl-3">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-body p-4 text-center">
+                        <p class="text-muted fw-semibold mb-2">Lesiones</p>
+                        <h2 class="display-5 fw-bold mb-0" id="total-lesiones">0</h2>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-6">
-                <a href="excel.html" class="btn btn-secondary w-100">Subida de Excel</a>
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-12 col-lg-8">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-body p-4">
+                        <h4 class="fw-bold mb-3">Accesos rápidos</h4>
+                        <p class="text-muted mb-4">Accede directamente a los módulos principales del sistema.</p>
+
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <a href="jugadores.html" class="btn btn-outline-dark w-100 py-3 rounded-3">
+                                    Gestión de Jugadores
+                                </a>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <a href="temporadas.html" class="btn btn-outline-dark w-100 py-3 rounded-3">
+                                    Gestión de Temporadas
+                                </a>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <a href="partidos.html" class="btn btn-outline-dark w-100 py-3 rounded-3">
+                                    Gestión de Partidos
+                                </a>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <a href="lesiones.html" class="btn btn-outline-dark w-100 py-3 rounded-3">
+                                    Gestión de Lesiones
+                                </a>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <a href="excel.html" class="btn btn-outline-primary w-100 py-3 rounded-3">
+                                    Importar Excel
+                                </a>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <a href="importaciones.html" class="btn btn-outline-primary w-100 py-3 rounded-3">
+                                    Historial de Importaciones
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <div class="col-12 col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-body p-4">
+                        <h4 class="fw-bold mb-3">Resumen</h4>
+                        <p class="text-muted mb-4">
+                            Panel para mostrar la informacion mas importante del club.
+                        </p>
+
+                        <div class="d-grid gap-3">
+                            <div class="border rounded-3 p-3 bg-light">
+                                <div class="fw-semibold">Módulo principal</div>
+                                <div class="text-muted small">Gestión deportiva SD Eibar</div>
+                            </div>
+
+                            <div class="border rounded-3 p-3 bg-light">
+                                <div class="fw-semibold">Entrada de datos</div>
+                                <div class="text-muted small">Importación de Excel asociada a partidos</div>
+                            </div>
+
+                            <div class="border rounded-3 p-3 bg-light">
+                                <div class="fw-semibold">Estado actual</div>
+                                <div class="text-muted small">Sistema funcional con CRUD e historial de importaciones</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -114,7 +196,6 @@
                     document.getElementById('total-lesiones').textContent = datos.data.length;
                 }
             });
-            
     </script>
 
 </body>
