@@ -1,10 +1,11 @@
 <?php
-// mismas explicaciones sencillas en todos, basandote en jugadores
+
 require '../conexion.php';
 
 $temporadas = [];
 
-$sql = "SELECT id_temporada, nombre, fecha_inicio, fecha_fin, activa FROM temporadas";
+/* Ordenacion descendente en base a la fecha */
+$sql = "SELECT id_temporada, nombre, fecha_inicio, fecha_fin, activa FROM temporadas ORDER BY fecha_inicio DESC";
 $stmt = $conexion->prepare($sql);
 $stmt->execute();
 

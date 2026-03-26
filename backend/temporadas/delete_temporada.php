@@ -15,12 +15,12 @@ try {
 
     $id_temporada = $data['id_temporada'];
 
-    // Comprueba si la temporada tiene algun partido asociados
-    $sqlComprueba = "SELECT COUNT(*) AS total FROM partidos WHERE id_temporada = ?";
-    $stmtComprueba = $conexion->prepare($sqlComprueba);
-    $stmtComprueba->bind_param("i", $id_temporada);
-    $stmtComprueba->execute();
-    $resultado = $stmtComprueba->get_result();
+    // Comprueba si la temporada tiene algun partido asociado
+    $sqlComprobacion = "SELECT COUNT(*) AS total FROM partidos WHERE id_temporada = ?";
+    $stmtComprobacion = $conexion->prepare($sqlComprobacion);
+    $stmtComprobacion->bind_param("i", $id_temporada);
+    $stmtComprobacion->execute();
+    $resultado = $stmtComprobacion->get_result();
     $fila = $resultado->fetch_assoc();
 
     if ($fila['total'] > 0) {
@@ -47,4 +47,8 @@ try {
         'error' => $e->getMessage()
     ]);
 }
+
+$stmtComprobacion->close();
+$stmt->close();
+
 ?>

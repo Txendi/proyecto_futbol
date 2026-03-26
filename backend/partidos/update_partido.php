@@ -1,10 +1,17 @@
 <?php
-// mismas explicaciones sencillas en todos, basandote en jugadores
+
 require '../conexion.php';
 
 $input = file_get_contents('php://input');
 $data = json_decode($input, true);
 
+/* Validacion de esos campos */
+if (empty($rival) || empty($fecha) || empty($id_temporada)) {
+    echo json_encode(['ok' => false, 'error' => 'Faltan datos obligatorios']);
+    exit;
+}
+
+/* En caso de no recibir nada o un id no existente */
 if (!$data || !isset($data['id_partido'])) {
     echo json_encode(['ok' => false, 'error' => 'Faltan datos o el ID del partido']);
     exit;

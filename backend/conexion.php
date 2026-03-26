@@ -2,14 +2,16 @@
 
 error_reporting(0);
 ini_set('display_errors', 0);
+header('Content-Type: application/json');
 
-/* --- CONFIGURACIÓN WINDOWS (Casa) --- */
+/* --- CONFIGURACION WINDOWS (Casa) --- */
 define('SERVIDOR', 'localhost');
 define('BBDD', 'sistema_futbol');
 define('USUARIO', 'root');
 define('CLAVE', '');
 
-/* define('SERVIDOR', 'localhost');
+/* --- CONFIGURACION ALTERNATIVA (Clase) --- */
+/* define('SERVIDOR', 'endika1dawt');
 define('BBDD', 'sistema_futbol');
 define('USUARIO', 'root');
 define('CLAVE', 'root'); */
@@ -19,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
+// Conexion a la base de datos
 $conexion = new mysqli(SERVIDOR, USUARIO, CLAVE, BBDD);
 $conexion->set_charset('utf8mb4');
 
