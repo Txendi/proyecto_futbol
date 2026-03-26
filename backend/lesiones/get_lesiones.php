@@ -11,7 +11,8 @@ if (isset($_GET['id_jugador'])) {
             FROM lesiones
             JOIN jugadores
             ON lesiones.id_jugador = jugadores.id_jugador
-            WHERE lesiones.id_jugador = ?";
+            WHERE lesiones.id_jugador = ?
+            ORDER BY lesiones.fecha_inicio DESC";
 
     $stmt = $conexion->prepare($sql);
     $stmt->bind_param("i", $id_jugador);

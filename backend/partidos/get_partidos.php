@@ -15,7 +15,7 @@ if (isset($_GET['rival'])) {
     $stmt->bind_param("s", $rival);
 
 } elseif (isset($_GET['id_temporada'])) {
-    $id_temporada = intval($_GET['id_temporada']);
+    $id_temporada = ($_GET['id_temporada']);
 
     $sql = "SELECT id_partido, id_temporada, rival, fecha, competicion, local_visitante, goles_favor, goles_contra
             FROM partidos

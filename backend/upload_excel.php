@@ -3,6 +3,7 @@ require 'conexion.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+/* Segun el partido seleccionado */
     $id_partido = $_POST['id_partido'] ?? null;
 
     if (!$id_partido) {
@@ -15,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    /* Recoger los datos del archivo */
     $archivo = $_FILES['excel'];
     $nombreOriginal = $archivo['name'];
     $tmp = $archivo['tmp_name'];
@@ -25,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    /* Extensiones de excel */
     $extension = strtolower(pathinfo($nombreOriginal, PATHINFO_EXTENSION));
     $extensionesPermitidas = ['xls', 'xlsx'];
 
