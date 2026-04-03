@@ -31,7 +31,13 @@ $stmt = $conexion->prepare($sql);
 $stmt->bind_param("issssss", $id_jugador, $fecha_inicio, $fecha_fin, $tipo_lesion, $gravedad, $fecha_prevista_retorno, $observaciones);
 
 if ($stmt->execute()) {
-    echo json_encode(['ok' => true, 'mensaje' => 'Lesion registrada correctamente']);
+    $sqlUpdateJugador = "UPDATE jugadores SET estado = 'lesionado' WHERE id_jugador = ?";
+    $stmtUpdate = $conexion->prepare($sqlUpdateJugador);
+    $stmtUpdate->bind_param("i", $id_jugador);
+    $stmtUpdate->execute();
+    $stmtUpdate->close();
+
+    echo json_encode(['ok' => true, 'mensaje' => 'Lesión registrada y estado del jugador actualizado']);
 } else {
     echo json_encode(['ok' => false, 'error' => $stmt->error]);
 }

@@ -233,6 +233,13 @@ VALUES
     ('DC', 'Delantero Centro', 'ataque');
 
 INSERT INTO
+    usuarios (nombre_usuario, contraseña_hash, rol)
+VALUES
+    ('admin', '1234', 'admin'),
+    ('mister', '1234', 'entrenador'),
+    ('analista1', '1234', 'analista');
+
+INSERT INTO
     configuraciones_pesos (nombre_configuracion, activa)
 VALUES
     ('Modelo Estándar 2026', TRUE);

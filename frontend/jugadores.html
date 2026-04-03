@@ -6,21 +6,76 @@
     <title>Gestión de Jugadores</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        /* Oculta los botones de admin por defecto. Solo los muestra si el body tiene la clase is-admin */
+        .btn-admin {
+            display: none !important;
+        }
+
+        body.is-admin .btn-admin {
+            display: inline-block !important;
+        }
+
+        :root {
+            --eibar-blue: #003366;
+            --eibar-red: #a20025;
+        }
+
+        .navbar-eibar {
+            background-color: var(--eibar-blue) !important;
+            border-bottom: 4px solid var(--eibar-red);
+        }
+
+        .text-eibar-blue {
+            color: var(--eibar-blue) !important;
+        }
+
+        .card-stats {
+            border-top: 4px solid var(--eibar-blue);
+            transition: transform 0.2s;
+        }
+
+        .card-stats:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-red {
+            border-top-color: var(--eibar-red);
+        }
+    </style>
 </head>
 
 <body class="bg-light">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-eibar shadow">
         <div class="container py-2">
-            <a class="navbar-brand fw-bold" href="dashboard.html">Sistema SD Eibar</a>
+            <a class="navbar-brand d-flex align-items-center gap-3 fw-bold fs-4" href="dashboard.html">
+                <img src="../assets/sdeibarlogo.png" alt="Escudo SD Eibar" class="d-inline-block align-text-top"
+                    style="height: 60px; width: auto;"> Sistema SD Eibar
+            </a>
 
-            <div class="d-flex flex-wrap gap-2">
-                <a href="dashboard.html" class="btn btn-outline-light btn-sm rounded-pill">Dashboard</a>
-                <a href="jugadores.html" class="btn btn-light btn-sm rounded-pill fw-semibold">Jugadores</a>
-                <a href="temporadas.html" class="btn btn-outline-light btn-sm rounded-pill">Temporadas</a>
-                <a href="partidos.html" class="btn btn-outline-light btn-sm rounded-pill">Partidos</a>
-                <a href="lesiones.html" class="btn btn-outline-light btn-sm rounded-pill">Lesiones</a>
-                <a href="excel.html" class="btn btn-outline-light btn-sm rounded-pill">Excel</a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                data-bs-target="#menuNavegacion">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="menuNavegacion">
+                <div class="navbar-nav ms-auto gap-3 align-items-center mt-3 mt-lg-0">
+                    <a href="dashboard.html"
+                        class="nav-link active fw-bold text-white border-bottom border-2 border-danger pb-1">Dashboard</a>
+                    <a href="jugadores.html" class="nav-link text-white opacity-75">Jugadores</a>
+                    <a href="temporadas.html" class="nav-link text-white opacity-75">Temporadas</a>
+                    <a href="partidos.html" class="nav-link text-white opacity-75">Partidos</a>
+                    <a href="lesiones.html" class="nav-link text-white opacity-75">Lesiones</a>
+
+                    <div class="ms-lg-4 ps-lg-4 border-start border-secondary d-flex align-items-center">
+                        <a href="login.html" id="btn-login"
+                            class="btn btn-warning btn-sm rounded-pill fw-bold text-dark px-4 shadow-sm">Iniciar
+                            Sesión</a>
+                        <button id="btn-logout" class="btn btn-danger btn-sm rounded-pill fw-bold d-none px-4 shadow-sm"
+                            onclick="cerrarSesion()">Cerrar Sesión</button>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -43,8 +98,8 @@
                     </div>
 
                     <div class="col-12 col-lg-4 text-lg-end">
-                        <button class="btn btn-primary btn-lg px-4 rounded-3 shadow-sm"
-                            data-bs-toggle="modal" data-bs-target="#modalNuevo">
+                        <button class="btn btn-primary btn-lg px-4 rounded-3 shadow-sm btn-admin" data-bs-toggle="modal"
+                            data-bs-target="#modalNuevo">
                             + Añadir Jugador
                         </button>
                     </div>
@@ -78,19 +133,14 @@
                     <h5 class="modal-title fw-bold">Editar Jugador</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
                 <div class="modal-body pt-3">
                     <input type="hidden" id="edit-id">
-
                     <input type="text" id="edit-nombre" class="form-control form-control-lg rounded-3 mb-3"
                         placeholder="Nombre" required>
-
                     <input type="text" id="edit-apellidos" class="form-control form-control-lg rounded-3 mb-3"
                         placeholder="Apellidos" required>
-
                     <input type="text" id="edit-alias" class="form-control form-control-lg rounded-3 mb-3"
                         placeholder="Alias">
-
                     <select id="edit-posicion" class="form-select form-select-lg rounded-3 mb-3" required>
                         <option value="" disabled selected>Selecciona una posición</option>
                         <option value="POR">Portero</option>
@@ -104,16 +154,14 @@
                         <option value="EXTI">Extremo Izquierdo</option>
                         <option value="DC">Delantero Centro</option>
                     </select>
-
                     <select id="edit-estado" class="form-select form-select-lg rounded-3 mb-3">
                         <option value="activo">Activo</option>
                         <option value="lesionado">Lesionado</option>
                     </select>
                 </div>
-
                 <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-primary px-4 rounded-3"
-                        onclick="guardarEditar()">Guardar cambios</button>
+                    <button type="button" class="btn btn-primary px-4 rounded-3" onclick="guardarEditar()">Guardar
+                        cambios</button>
                 </div>
             </div>
         </div>
@@ -126,18 +174,14 @@
                     <h5 class="modal-title fw-bold">Añadir Jugador</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
                 <div class="modal-body pt-3">
                     <form id="formNuevo">
                         <input type="text" id="add-nombre" class="form-control form-control-lg rounded-3 mb-3"
                             placeholder="Nombre" required>
-
                         <input type="text" id="add-apellidos" class="form-control form-control-lg rounded-3 mb-3"
                             placeholder="Apellidos" required>
-
                         <input type="text" id="add-alias" class="form-control form-control-lg rounded-3 mb-3"
                             placeholder="Alias">
-
                         <select id="add-posicion" class="form-select form-select-lg rounded-3 mb-3" required>
                             <option value="" disabled selected>Selecciona una posición</option>
                             <option value="POR">Portero</option>
@@ -151,14 +195,12 @@
                             <option value="EXTI">Extremo Izquierdo</option>
                             <option value="DC">Delantero Centro</option>
                         </select>
-
                         <select id="add-estado" class="form-select form-select-lg rounded-3 mb-3">
                             <option value="activo">Activo</option>
                             <option value="lesionado">Lesionado</option>
                         </select>
                     </form>
                 </div>
-
                 <div class="modal-footer border-0 pt-0">
                     <button type="button" class="btn btn-primary px-4 rounded-3"
                         onclick="guardarNuevo()">Guardar</button>
@@ -186,26 +228,33 @@
                     : '<span class="badge rounded-pill text-bg-danger px-3 py-2">Lesionado</span>';
 
                 tbody.innerHTML += `
-                    <tr>
-                        <td>${jugador.nombre}</td>
-                        <td>${jugador.apellidos}</td>
-                        <td>${jugador.alias}</td>
-                        <td>${jugador.posicion_habitual}</td>
-                        <td>${badgeEstado}</td>
-                        <td>
-                            <div class="d-flex justify-content-center gap-2">
-                                <button class="btn btn-sm btn-outline-warning rounded-pill px-3"
-                                    onclick="abrirEditar(${jugador.id_jugador}, '${jugador.nombre}', '${jugador.apellidos}', '${jugador.alias}', '${jugador.posicion_habitual}', '${jugador.estado}')">
-                                    Editar
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger rounded-pill px-3"
-                                    onclick="borrar(${jugador.id_jugador})">
-                                    Borrar
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
+            <tr>
+                <td class="fw-semibold text-primary" style="cursor:pointer;" 
+                    onclick="verPerfil(${jugador.id_jugador}, '${jugador.nombre}', '${jugador.apellidos}', '${jugador.alias}', '${jugador.posicion_habitual}', '${jugador.estado}')">
+                    ${jugador.nombre}
+                </td>
+                <td>${jugador.apellidos}</td>
+                <td>${jugador.alias}</td>
+                <td>${jugador.posicion_habitual}</td>
+                <td>${badgeEstado}</td>
+                <td>
+                    <div class="d-flex justify-content-center gap-2">
+                        <button class="btn btn-sm btn-outline-info rounded-pill px-3"
+                            onclick="verPerfil(${jugador.id_jugador}, '${jugador.nombre}', '${jugador.apellidos}', '${jugador.alias}', '${jugador.posicion_habitual}', '${jugador.estado}')">
+                            Perfil
+                        </button>
+                        <button class="btn btn-sm btn-outline-warning rounded-pill px-3 btn-admin"
+                            onclick="abrirEditar(${jugador.id_jugador}, '${jugador.nombre}', '${jugador.apellidos}', '${jugador.alias}', '${jugador.posicion_habitual}', '${jugador.estado}')">
+                            Editar
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger rounded-pill px-3 btn-admin"
+                            onclick="borrar(${jugador.id_jugador})">
+                            Borrar
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
             });
         }
 
@@ -216,9 +265,7 @@
             document.getElementById('edit-alias').value = alias;
             document.getElementById('edit-posicion').value = posicion;
             document.getElementById('edit-estado').value = estado;
-
-            const modal = new bootstrap.Modal(document.getElementById('modalEditar'));
-            modal.show();
+            new bootstrap.Modal(document.getElementById('modalEditar')).show();
         }
 
         function guardarEditar() {
@@ -230,19 +277,9 @@
                 posicion_habitual: document.getElementById('edit-posicion').value,
                 estado: document.getElementById('edit-estado').value
             };
-
-            fetch('../backend/jugadores/update_jugador.php', {
-                method: 'POST',
-                body: JSON.stringify(datos)
-            })
+            fetch('../backend/jugadores/update_jugador.php', { method: 'POST', body: JSON.stringify(datos) })
                 .then(respuesta => respuesta.json())
-                .then(resultado => {
-                    if (resultado.ok) {
-                        window.location.reload();
-                    } else {
-                        alert("Error al editar: " + resultado.error);
-                    }
-                });
+                .then(resultado => { if (resultado.ok) window.location.reload(); else alert("Error al editar: " + resultado.error); });
         }
 
         function guardarNuevo() {
@@ -253,53 +290,126 @@
                 posicion_habitual: document.getElementById('add-posicion').value,
                 estado: document.getElementById('add-estado').value
             };
-
-            fetch('../backend/jugadores/add_jugador.php', {
-                method: 'POST',
-                body: JSON.stringify(datos)
-            })
+            fetch('../backend/jugadores/add_jugador.php', { method: 'POST', body: JSON.stringify(datos) })
                 .then(respuesta => respuesta.json())
-                .then(resultado => {
-                    if (resultado.ok) {
-                        window.location.reload();
-                    } else {
-                        alert("Error al guardar: " + resultado.error);
-                    }
-                });
+                .then(resultado => { if (resultado.ok) window.location.reload(); else alert("Error al guardar: " + resultado.error); });
         }
 
         function borrar(id) {
-            let mensaje = confirm("¿Seguro que quieres eliminar a este jugador?");
-
-            if (mensaje) {
-                fetch('../backend/jugadores/delete_jugador.php', {
-                    method: 'POST',
-                    body: JSON.stringify({ id_jugador: id })
-                })
+            if (confirm("¿Seguro que quieres eliminar a este jugador?")) {
+                fetch('../backend/jugadores/delete_jugador.php', { method: 'POST', body: JSON.stringify({ id_jugador: id }) })
                     .then(respuesta => respuesta.json())
-                    .then(datos => {
-                        if (datos.ok) {
-                            window.location.reload();
-                        } else {
-                            alert("Error al borrar: " + datos.error);
-                        }
-                    });
+                    .then(datos => { if (datos.ok) window.location.reload(); else alert("Error al borrar: " + datos.error); });
             }
         }
 
         function filtrarJugadores() {
             const busqueda = document.getElementById('search').value;
-
             fetch(`../backend/jugadores/get_jugadores.php?query=${busqueda}`)
                 .then(respuesta => respuesta.json())
-                .then(datos => {
-                    if (datos.ok) {
-                        listarJugadores(datos.data);
+                .then(datos => { if (datos.ok) listarJugadores(datos.data); });
+        }
+
+        function verPerfil(id, nombre, apellidos, alias, posicion, estado) {
+            document.getElementById('perfil-nombre').textContent = nombre + ' ' + apellidos;
+            document.getElementById('perfil-posicion').textContent = posicion;
+            const badgeEstado = document.getElementById('perfil-estado');
+            badgeEstado.textContent = estado.toUpperCase();
+            badgeEstado.className = 'badge rounded-pill fs-6 mb-2 ' + (estado === 'activo' ? 'bg-success text-dark' : 'bg-danger text-white');
+            new bootstrap.Modal(document.getElementById('modalPerfilJugador')).show();
+
+            fetch(`../backend/lesiones/get_lesiones.php?id_jugador=${id}`).then(res => res.json()).then(datos => {
+                const lista = document.getElementById('perfil-lesiones');
+                lista.innerHTML = '';
+                if (datos.ok && datos.data.length > 0) {
+                    datos.data.forEach(l => { lista.innerHTML += `<li class="list-group-item bg-transparent text-light border-secondary small"><span class="text-warning">${l.fecha_inicio}</span> - ${l.tipo_lesion}</li>`; });
+                } else {
+                    lista.innerHTML = '<li class="list-group-item bg-transparent text-muted border-0 small">Sin lesiones registradas.</li>';
+                }
+            });
+
+            fetch(`../backend/jugadores/get_estadisticas.php?id_jugador=${id}`).then(res => res.json()).then(datos => {
+                const tbodyStats = document.getElementById('perfil-estadisticas');
+                tbodyStats.innerHTML = '';
+                if (datos.ok && datos.data.length > 0) {
+                    datos.data.forEach(stat => {
+                        let filas = '';
+                        for (const [clave, valor] of Object.entries(stat)) { filas += `<tr><td class="text-info">${clave}</td><td>${valor !== null ? valor : '-'}</td></tr>`; }
+                        tbodyStats.innerHTML += filas + '<tr><td colspan="2" class="border-bottom border-success"></td></tr>';
+                    });
+                } else {
+                    tbodyStats.innerHTML = '<tr><td class="text-muted">Sin estadísticas registradas.</td></tr>';
+                }
+            });
+        }
+    </script>
+
+    <div class="modal fade" id="modalPerfilJugador" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content text-bg-dark border-0 shadow-lg rounded-4"
+                style="border-top: 3px solid #00ff88 !important;">
+                <div class="modal-header border-bottom border-secondary">
+                    <h5 class="modal-title fw-bold" style="color: #00ff88;"><span id="perfil-nombre">Nombre
+                            Jugador</span></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center pt-4">
+                    <span id="perfil-estado" class="badge rounded-pill fs-6 mb-2">Activo</span>
+                    <p class="text-light mb-4">Posición: <strong id="perfil-posicion"
+                            style="color: #00eaee;">Posición</strong></p>
+                    <h6 class="fw-semibold text-uppercase text-start" style="color: #00ff88;">Estadísticas</h6>
+                    <div class="table-responsive mb-4">
+                        <table class="table table-dark table-sm table-bordered">
+                            <tbody id="perfil-estadisticas">
+                                <tr>
+                                    <td class="text-muted">Cargando...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h6 class="fw-semibold text-uppercase text-start" style="color: #00ff88;">Historial de Lesiones</h6>
+                    <ul id="perfil-lesiones" class="list-group list-group-flush bg-transparent text-start">
+                        <li class="list-group-item bg-transparent text-light border-secondary">Cargando...</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('../backend/check_session.php')
+                .then(res => res.json())
+                .then(data => {
+                    const btnLogin = document.getElementById('btn-login');
+                    const btnLogout = document.getElementById('btn-logout');
+
+                    if (data.ok) {
+                        btnLogin.classList.add('d-none');
+                        btnLogout.classList.remove('d-none');
+
+                        // Asignar clase al body para activar CSS dinámico
+                        if (data.rol === 'admin') {
+                            document.body.classList.add('is-admin');
+                        }
+                    } else {
+                        btnLogin.classList.remove('d-none');
+                        btnLogout.classList.add('d-none');
+                        document.body.classList.remove('is-admin');
+                    }
+                });
+        });
+
+        function cerrarSesion() {
+            fetch('../backend/logout.php')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.ok) {
+                        window.location.reload();
                     }
                 });
         }
     </script>
-
 </body>
 
 </html>
