@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Gestión de Partidos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         :root {
@@ -33,6 +34,37 @@
         .card-red {
             border-top-color: var(--eibar-red);
         }
+
+        .btn-eibar-red {
+            background-color: var(--eibar-red);
+            color: white;
+            border: none;
+        }
+
+        .btn-eibar-red:hover {
+            background-color: #82001c;
+            color: white;
+        }
+
+        .table-hover tbody tr {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .table-hover tbody tr:hover {
+            transform: scale(1.015);
+            box-shadow: 0 5px 15px rgba(0, 51, 102, 0.15);
+            background-color: #ffffff !important;
+            z-index: 1;
+            position: relative;
+        }
+
+        .btn-admin {
+            display: none !important;
+        }
+
+        body.is-admin .btn-admin {
+            display: inline-block !important;
+        }
     </style>
 </head>
 
@@ -52,14 +84,15 @@
 
             <div class="collapse navbar-collapse" id="menuNavegacion">
                 <div class="navbar-nav ms-auto gap-3 align-items-center mt-3 mt-lg-0">
-                    <a href="dashboard.html"
-                        class="nav-link active fw-bold text-white border-bottom border-2 border-danger pb-1">Dashboard</a>
+                    <a href="dashboard.html" class="nav-link text-white opacity-75">Dashboard</a>
                     <a href="jugadores.html" class="nav-link text-white opacity-75">Jugadores</a>
                     <a href="temporadas.html" class="nav-link text-white opacity-75">Temporadas</a>
-                    <a href="partidos.html" class="nav-link text-white opacity-75">Partidos</a>
+                    <a href="partidos.html"
+                        class="nav-link active fw-bold text-white border-bottom border-2 border-danger pb-1">Partidos</a>
                     <a href="lesiones.html" class="nav-link text-white opacity-75">Lesiones</a>
 
-                    <div class="ms-lg-4 ps-lg-4 border-start border-secondary d-flex align-items-center">
+                    <div class="ms-lg-4 ps-lg-4 border-start border-secondary d-flex align-items-center gap-2">
+                        <span id="user-role-badge" class="badge bg-light text-dark d-none">Rol</span>
                         <a href="login.html" id="btn-login"
                             class="btn btn-warning btn-sm rounded-pill fw-bold text-dark px-4 shadow-sm">Iniciar
                             Sesión</a>
@@ -77,21 +110,22 @@
 
                 <div class="row g-3 align-items-center mb-4">
                     <div class="col-12 col-lg-4">
-                        <div>
-                            <h2 class="fw-bold mb-1">Partidos</h2>
-                            <p class="text-muted mb-0">Gestión de los partidos registrados en el sistema</p>
+                        <h2 class="fw-bold mb-1 text-eibar-blue">Partidos</h2>
+                        <p class="text-muted mb-0">Gestión de partidos disputados</p>
+                    </div>
+                    <div class="col-12 col-lg-5">
+                        <div
+                            class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden border border-secondary border-opacity-25">
+                            <span class="input-group-text bg-white border-0 text-eibar-blue"><i
+                                    class="bi bi-search"></i></span>
+                            <input type="text" id="search-rival" class="form-control border-0 ps-0 shadow-none"
+                                placeholder="Buscar por rival..." oninput="filtrarPartidos()">
                         </div>
                     </div>
-
-                    <div class="col-12 col-lg-4">
-                        <input type="text" id="search-rival" class="form-control form-control-lg rounded-3"
-                            placeholder="Buscar por rival..." oninput="filtrarPartidos()">
-                    </div>
-
-                    <div class="col-12 col-lg-4 text-lg-end">
-                        <button class="btn btn-primary btn-lg px-4 rounded-3 shadow-sm"
+                    <div class="col-12 col-lg-3 text-lg-end">
+                        <button class="btn btn-eibar-red btn-lg px-4 rounded-pill shadow btn-admin fw-semibold"
                             data-bs-toggle="modal" data-bs-target="#modalNuevo">
-                            + Añadir Partido
+                            <i class="bi bi-plus-circle me-2"></i>Añadir
                         </button>
                     </div>
                 </div>
@@ -119,6 +153,22 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('../backend/check_session.php').then(res => res.json()).then(data => {
+                const btnLogin = document.getElementById('btn-login');
+                const btnLogout = document.getElementById('btn-logout');
+                const roleBadge = document.getElementById('user-role-badge');
+                if (data.ok) {
+                    btnLogin.classList.add('d-none'); btnLogout.classList.remove('d-none');
+                    roleBadge.textContent = data.rol.toUpperCase(); roleBadge.classList.remove('d-none');
+                    if (data.rol === 'admin') document.body.classList.add('is-admin');
+                } else {
+                    btnLogin.classList.remove('d-none'); btnLogout.classList.add('d-none');
+                    document.body.classList.remove('is-admin');
+                }
+            });
+        });
+
         function cargarPartidos(url) {
             fetch(url)
                 .then(respuesta => respuesta.json())
@@ -129,27 +179,16 @@
                     if (datos.ok) {
                         datos.data.forEach(partido => {
                             tbody.innerHTML += `
-                                <tr>
-                                    <td>${partido.rival}</td>
-                                    <td>${partido.fecha}</td>
-                                    <td>${partido.competicion}</td>
-                                    <td>
-                                        <span class="badge rounded-pill ${partido.local_visitante === 'local' ? 'text-bg-primary' : 'text-bg-secondary'} px-3 py-2">
-                                            ${partido.local_visitante}
-                                        </span>
-                                    </td>
-                                    <td>${partido.goles_favor}</td>
-                                    <td>${partido.goles_contra}</td>
+                                <tr class="align-middle border-bottom border-light">
+                                    <td class="fw-bold text-dark"><i class="bi bi-shield-fill me-2 text-eibar-blue"></i>${partido.rival}</td>
+                                    <td class="text-secondary fw-semibold"><i class="bi bi-calendar-event me-2"></i>${partido.fecha}</td>
+                                    <td><span class="badge bg-light text-dark border px-2 py-1">${partido.competicion}</span></td>
+                                    <td><span class="badge bg-${partido.local_visitante === 'local' ? 'primary' : 'info'} bg-opacity-75 rounded-pill px-3 py-2">${partido.local_visitante.toUpperCase()}</span></td>
+                                    <td class="fw-bold fs-5 text-success" colspan="2">${partido.goles_favor} <span class="text-dark mx-1">-</span> <span class="text-danger">${partido.goles_contra}</span></td>
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
-                                            <button class="btn btn-sm btn-outline-warning rounded-pill px-3"
-                                                onclick="abrirEditar(${partido.id_partido}, ${partido.id_temporada}, '${partido.rival}', '${partido.fecha}', '${partido.competicion}', '${partido.local_visitante}', ${partido.goles_favor}, ${partido.goles_contra})">
-                                                Editar
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger rounded-pill px-3"
-                                                onclick="borrarPartido(${partido.id_partido})">
-                                                Borrar
-                                            </button>
+                                            <button class="btn btn-sm btn-outline-warning rounded-pill px-3 fw-semibold btn-admin" onclick="abrirEditar(${partido.id_partido}, ${partido.id_temporada}, '${partido.rival}', '${partido.fecha}', '${partido.competicion}', '${partido.local_visitante}', ${partido.goles_favor}, ${partido.goles_contra})"><i class="bi bi-pencil-square me-1"></i>Editar</button>
+                                            <button class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-semibold btn-admin" onclick="borrarPartido(${partido.id_partido})"><i class="bi bi-trash3-fill me-1"></i>Borrar</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -357,8 +396,8 @@
                 </div>
 
                 <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-primary px-4 rounded-3"
-                        onclick="guardarEditar()">Guardar cambios</button>
+                    <button type="button" class="btn btn-primary px-4 rounded-3" onclick="guardarEditar()">Guardar
+                        cambios</button>
                 </div>
             </div>
         </div>

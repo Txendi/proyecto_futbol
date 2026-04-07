@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS sistema_futbol;
+
 CREATE DATABASE sistema_futbol;
 
 USE sistema_futbol;
@@ -70,9 +72,11 @@ CREATE TABLE
         puntuacion_ataque DECIMAL(4, 2),
         puntuacion_construccion DECIMAL(4, 2),
         puntuacion_defensa DECIMAL(4, 2),
+        factor_minutos DECIMAL(4, 2),
         puntuacion_final DECIMAL(4, 2),
         explicacion_positiva TEXT,
         explicacion_negativa TEXT,
+        version_modelo VARCHAR(50),
         fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (id_partido) REFERENCES partidos (id_partido),
         FOREIGN KEY (id_jugador) REFERENCES jugadores (id_jugador)
@@ -165,10 +169,11 @@ CREATE TABLE
         xg INT DEFAULT 0,
         xa INT DEFAULT 0,
         asistencias_tiro INT DEFAULT 0,
-        asistencias_segundo INT DEFAULT 0,
+        asistencias_segunda INT DEFAULT 0,
         -- Pases 
         pases_totales INT DEFAULT 0,
         pases_completados INT DEFAULT 0,
+        pases_largos_totales INT DEFAULT 0,
         pases_largos_completados INT DEFAULT 0,
         pases_al_area_totales INT DEFAULT 0,
         pases_al_area_completados INT DEFAULT 0,
@@ -196,7 +201,7 @@ CREATE TABLE
         intercepciones INT DEFAULT 0,
         despejes INT DEFAULT 0,
         balones_recuperados_campo_rival INT DEFAULT 0,
-        balones_recuperados_campo_propio INT DEFAULT 0,
+        balones_perdidos_campo_propio INT DEFAULT 0,
         -- Disciplina
         tarjeta_amarilla BOOLEAN DEFAULT FALSE,
         tarjeta_roja BOOLEAN DEFAULT FALSE,
@@ -205,16 +210,6 @@ CREATE TABLE
         fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (id_partido) REFERENCES partidos (id_partido),
         FOREIGN KEY (id_jugador) REFERENCES jugadores (id_jugador)
-    );
-
-CREATE TABLE
-    importaciones_excel (
-        id_importacion INT AUTO_INCREMENT PRIMARY KEY,
-        id_partido INT NOT NULL,
-        nombre_archivo VARCHAR(255) NOT NULL,
-        ruta_archivo VARCHAR(255) NOT NULL,
-        fecha_subida TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (id_partido) REFERENCES partidos (id_partido)
     );
 
 -- INSERTS de prueba
