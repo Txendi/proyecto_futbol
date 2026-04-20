@@ -1,24 +1,23 @@
 <?php
-// mismas explicaciones sencillas en todos, basandote en jugadores
+
 require '../conexion.php';
 
-$input = file_get_contents('php://input');
-$data = json_decode($input, true);
+$data = json_decode(file_get_contents('php://input'), true);
 
-/* Recoje los datos, si no recibe nada, los mete vacios */
+// Comprobamos que hemos recibido datos
+if (!$data) {
+    echo json_encode(['ok' => false, 'error' => 'No se han recibido los datos']);
+    exit;
+}
+
 $nombre = $data['nombre'] ?? '';
 $fecha_inicio = $data['fecha_inicio'] ?? '';
 $fecha_fin = $data['fecha_fin'] ?? '';
 $activa = !empty($data['activa']) ? 1 : 0;
 
+// Nombre y fecha de inicio son obligatorios
 if (empty($nombre) || empty($fecha_inicio)) {
     echo json_encode(['ok' => false, 'error' => 'Nombre y fecha de inicio son obligatorios']);
-    exit;
-}
-
-/* Por si no recibe nada */
-if (!$data) {
-    echo json_encode(['ok' => false, 'error' => 'No se han recibido los datos']);
     exit;
 }
 

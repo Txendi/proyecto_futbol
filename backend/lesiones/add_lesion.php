@@ -1,9 +1,14 @@
 <?php
-// mismas explicaciones sencillas en todos, basandote en jugadores
+
 require '../conexion.php';
 
-$input = file_get_contents('php://input');
-$data = json_decode($input, true);
+$data = json_decode(file_get_contents('php://input'), true);
+
+// Comprobamos que hemos recibido datos
+if (!$data) {
+    echo json_encode(['ok' => false, 'error' => 'No se han recibido los datos']);
+    exit;
+}
 
 $id_jugador = $data['id_jugador'] ?? '';
 $fecha_inicio = $data['fecha_inicio'] ?? '';
@@ -13,29 +18,23 @@ $gravedad = $data['gravedad'] ?? 'leve';
 $fecha_prevista_retorno = $data['fecha_prevista_retorno'] ?? null;
 $observaciones = $data['observaciones'] ?? '';
 
-/* Validacion, para que no esten vacios */
+// Jugador fecha de inicio y tipo de lesion son obligatorios
 if (empty($id_jugador) || empty($fecha_inicio) || empty($tipo_lesion)) {
     echo json_encode(['ok' => false, 'error' => 'Faltan datos obligatorios']);
     exit;
 }
 
-/* Por si no recibe nada */
-if (!$data) {
-    echo json_encode(['ok' => false, 'error' => 'No se han recibido los datos']);
-    exit;
-}
-
-$sql = "INSERT INTO lesiones (id_jugador, fecha_inicio, fecha_fin, tipo_lesion, gravedad, fecha_prevista_retorno, observaciones) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)";
+$sql = "INSERT INTO lesiones (id_jugador, fecha_inicio, fecha_fin, tipo_lesion, gravedad, fecha_prevista_retorno, observaciones) VALUES (?, ?, ?, ?, ?, ?, ?)";
 $stmt = $conexion->prepare($sql);
 $stmt->bind_param("issssss", $id_jugador, $fecha_inicio, $fecha_fin, $tipo_lesion, $gravedad, $fecha_prevista_retorno, $observaciones);
 
 if ($stmt->execute()) {
-    $sqlUpdateJugador = "UPDATE jugadores SET estado = 'lesionado' WHERE id_jugador = ?";
-    $stmtUpdate = $conexion->prepare($sqlUpdateJugador);
-    $stmtUpdate->bind_param("i", $id_jugador);
-    $stmtUpdate->execute();
-    $stmtUpdate->close();
+    // Al registrar la lesion se marca de por si como lesionado
+    $sqlEstado = "UPDATE jugadores SET estado = 'lesionado' WHERE id_jugador = ?";
+    $stmtEstado = $conexion->prepare($sqlEstado);
+    $stmtEstado->bind_param("i", $id_jugador);
+    $stmtEstado->execute();
+    $stmtEstado->close();
 
     echo json_encode(['ok' => true, 'mensaje' => 'Lesión registrada y estado del jugador actualizado']);
 } else {

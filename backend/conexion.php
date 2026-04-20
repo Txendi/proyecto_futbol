@@ -2,20 +2,24 @@
 
 error_reporting(0);
 ini_set('display_errors', 0);
+
 header('Content-Type: application/json');
 
-/* --- CONFIGURACION WINDOWS (Casa) --- */
+// ===== CONFIGURACION DE LA BASE DE DATOS =====
+
+/* Casa (Windows) */
 define('SERVIDOR', 'localhost');
 define('BBDD', 'sistema_futbol');
 define('USUARIO', 'root');
 define('CLAVE', '');
 
-/* --- CONFIGURACION ALTERNATIVA (Clase) --- */
+/* Clase */
 /* define('SERVIDOR', 'endika1dawt');
 define('BBDD', 'sistema_futbol');
 define('USUARIO', 'root');
 define('CLAVE', 'root'); */
 
+// Manejo del preflight CORS
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;

@@ -2,25 +2,23 @@
 
 require '../conexion.php';
 
-$input = file_get_contents('php://input');
-$data = json_decode($input, true);
+$data = json_decode(file_get_contents('php://input'), true);
 
-/* Recoje los datos, si no recibe nada, los mete vacios */
+// Comprobamos que hemos recibido datos
+if (!$data) {
+    echo json_encode(['ok' => false, 'error' => 'No se han recibido los datos']);
+    exit;
+}
+
 $nombre = $data['nombre'] ?? '';
 $apellidos = $data['apellidos'] ?? '';
 $alias = $data['alias'] ?? '';
 $posicion = $data['posicion_habitual'] ?? '';
 $estado = $data['estado'] ?? 'activo';
 
-/* Validacion para nombre y apellido, que no esten vacios */
-if (empty($data['nombre']) || empty($data['apellidos'])) {
-    echo json_encode(['ok' => false, 'error' => 'Nombre y apellidos obligatorios']);
-    exit;
-}
-
-/* Por si no recibe nada */
-if (!$data) {
-    echo json_encode(['ok' => false, 'error' => 'No se han recibido los datos']);
+// Nombre y apellidos obligatorios
+if (empty($nombre) || empty($apellidos)) {
+    echo json_encode(['ok' => false, 'error' => 'Nombre y apellidos son obligatorios']);
     exit;
 }
 

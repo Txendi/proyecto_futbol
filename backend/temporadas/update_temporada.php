@@ -2,10 +2,9 @@
 
 require '../conexion.php';
 
-$input = file_get_contents('php://input');
-$data = json_decode($input, true);
+$data = json_decode(file_get_contents('php://input'), true);
 
-/* En caso de no recibir nada o un id no existente */
+// Comprobamos que hemos recibido datos y que existe el ID
 if (!$data || !isset($data['id_temporada'])) {
     echo json_encode(['ok' => false, 'error' => 'Faltan datos o el ID de la temporada']);
     exit;
@@ -17,7 +16,7 @@ $fecha_inicio = $data['fecha_inicio'] ?? '';
 $fecha_fin = $data['fecha_fin'] ?? '';
 $activa = !empty($data['activa']) ? 1 : 0;
 
-/* Validacion de datos nombre y fecha */
+// Nombre y fecha de inicio son obligatorios
 if (empty($nombre) || empty($fecha_inicio)) {
     echo json_encode(['ok' => false, 'error' => 'Nombre y fecha de inicio son obligatorios']);
     exit;

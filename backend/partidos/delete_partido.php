@@ -2,17 +2,17 @@
 
 require '../conexion.php';
 
-$input = file_get_contents('php://input');
-$data = json_decode($input, true);
+$data = json_decode(file_get_contents('php://input'), true);
 
+// Comprobamos que hemos recibido el ID
 if (!$data || !isset($data['id_partido'])) {
-    echo json_encode(['ok' => false, 'error' => 'No se ha encontrado el ID del partido']);
+    echo json_encode(['ok' => false, 'error' => 'No se ha recibido el ID del partido']);
     exit;
 }
 
 $id_partido = $data['id_partido'];
 
-$sql = "DELETE FROM partidos WHERE id_partido = ?";
+$sql  = "DELETE FROM partidos WHERE id_partido = ?";
 $stmt = $conexion->prepare($sql);
 $stmt->bind_param("i", $id_partido);
 

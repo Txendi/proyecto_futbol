@@ -572,3 +572,24 @@ VALUES
         0,
         1
     );
+
+INSERT INTO
+    puntuaciones (
+        id_partido,
+        id_jugador,
+        posicion_evaluada,
+        puntuacion_ataque,
+        puntuacion_construccion,
+        puntuacion_defensa,
+        factor_minutos,
+        puntuacion_final
+    )
+VALUES
+    (1, 13, 'DC', 7.20, 5.10, 3.40, 1.00, 7.50),
+    (1, 16, 'DC', 6.80, 4.90, 2.10, 0.95, 6.90),
+    (1, 9, 'MC', 4.50, 7.80, 5.20, 1.00, 6.40),
+    (1, 10, 'MCD', 3.20, 6.90, 7.10, 1.00, 6.10),
+    (1, 3, 'LD', 2.10, 5.40, 7.80, 0.90, 5.80),
+    (1, 5, 'DFC', 1.80, 4.20, 8.30, 1.00, 5.60),
+    (1, 6, 'DFC', 1.50, 3.90, 7.60, 0.85, 5.20),
+    (1, 15, 'EXTI', 6.10, 5.30, 2.80, 0.80, 5.00);
