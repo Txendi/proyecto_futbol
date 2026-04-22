@@ -157,6 +157,7 @@
                     <table class="table table-hover align-middle text-center mb-0">
                         <thead class="table-light border-bottom border-secondary">
                             <tr>
+                                <th class="text-eibar-blue">Dorsal</th>
                                 <th class="text-eibar-blue">Nombre</th>
                                 <th class="text-eibar-blue">Apellidos</th>
                                 <th class="text-eibar-blue">Posición</th>
@@ -352,6 +353,11 @@
 
                 tbody.innerHTML += `
                 <tr class="align-middle border-bottom border-light">
+                    <td>
+                        <span class="badge rounded-circle fw-bold text-white d-inline-flex align-items-center justify-content-center" style="width:36px; height:36px; font-size:0.85rem; background-color:var(--eibar-blue);">
+                            ${j.dorsal ?? '-'}
+                        </span>
+                    </td>
                     <td class="fw-bold text-dark fs-6">${j.nombre}</td>
                     <td class="text-secondary fw-semibold">${j.apellidos}</td>
                     <td><span class="badge badge-posicion px-3 py-2 rounded-pill fs-6">${j.posicion_habitual}</span></td>
