@@ -2,8 +2,8 @@
 
 header('Content-Type: application/json');
 
-// Creamos la carpeta uploads si no existe
-$directorio = '../uploads/';
+// Guardamos el Excel directamente en la carpeta data/ de Python
+$directorio = 'C:/xampp/htdocs/ProyectoEibar/ProyectoEibar/data/';
 if (!file_exists($directorio)) {
     mkdir($directorio, 0777, true);
 }
@@ -16,16 +16,16 @@ if (!isset($_FILES['archivo'])) {
 
 $archivo   = $_FILES['archivo'];
 $nombre    = basename($archivo['name']);
-$rutaFinal = $directorio . time() . '_' . $nombre;
+$rutaFinal = $directorio . $nombre; // Sin timestamp para que Python lo encuentre por nombre exacto
 $extension = strtolower(pathinfo($rutaFinal, PATHINFO_EXTENSION));
 
-// Solo para permitir Excel
+// Solo permitimos Excel
 if ($extension !== 'xlsx' && $extension !== 'xls') {
     echo json_encode(['ok' => false, 'error' => 'Solo se permiten archivos Excel (.xlsx, .xls)']);
     exit;
 }
 
-// Mover el archivo a la carpeta uploads
+// Movemos el archivo a la carpeta data/ de Python
 if (move_uploaded_file($archivo['tmp_name'], $rutaFinal)) {
     $id_partido = $_POST['id_partido'] ?? null;
 
