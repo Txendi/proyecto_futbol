@@ -28,14 +28,17 @@ if (!$partido) {
 }
 
 // ===== PUNTUACIONES DEL PARTIDO (ordenadas de mayor a menor nota) =====
+// Incluimos id_estadistica para poder usar el simulador de posicion con Python
 
 $sql = "SELECT pu.id_puntuacion, pu.posicion_evaluada,
                 pu.puntuacion_ataque, pu.puntuacion_construccion,
                 pu.puntuacion_defensa, pu.factor_minutos, pu.puntuacion_final,
                 pu.explicacion_positiva, pu.explicacion_negativa,
-                j.id_jugador, j.nombre, j.apellidos, j.posicion_habitual
+                j.id_jugador, j.nombre, j.apellidos, j.posicion_habitual,
+                e.id_estadistica
             FROM puntuaciones pu
             INNER JOIN jugadores j ON j.id_jugador = pu.id_jugador
+            LEFT JOIN estadisticas_jugador_partido e ON e.id_jugador = pu.id_jugador AND e.id_partido = pu.id_partido
             WHERE pu.id_partido = ?
             ORDER BY pu.puntuacion_final DESC";
 $stmt = $conexion->prepare($sql);
@@ -45,7 +48,6 @@ $res = $stmt->get_result();
 
 $puntuaciones = [];
 while ($fila = $res->fetch_assoc()) {
-    // Convertimos a float para que el JSON no los mande como string
     $fila['puntuacion_ataque'] = (float) $fila['puntuacion_ataque'];
     $fila['puntuacion_construccion'] = (float) $fila['puntuacion_construccion'];
     $fila['puntuacion_defensa'] = (float) $fila['puntuacion_defensa'];
@@ -60,5 +62,3 @@ echo json_encode([
     'partido' => $partido,
     'puntuaciones' => $puntuaciones
 ], JSON_UNESCAPED_UNICODE);
-
-?>
